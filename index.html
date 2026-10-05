@@ -110,6 +110,16 @@
         ✏ Texto / Marcador
       </button>
 
+      <button onclick="toggleDrawingMode()" id="btn-draw" class="bg-purple-800 hover:bg-purple-700 text-purple-100 font-semibold px-3 py-1.5 rounded-lg border border-purple-600/40 transition">
+        🎨 Modo Dibujar
+      </button>
+
+      <input type="color" id="draw-color" value="#ba2d32" class="w-8 h-8 bg-transparent cursor-pointer rounded border border-amber-700/40" title="Color de pincel">
+
+      <button onclick="clearCanvas()" class="bg-purple-950 hover:bg-purple-900 text-purple-200 px-2 py-1.5 rounded-lg border border-purple-800 text-xs transition">
+        🧹 Borrar Trazo
+      </button>
+
       <button onclick="triggerStickerUpload()" class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 transition">
         🎀 Subir PNG / Sticker
       </button>
@@ -162,6 +172,7 @@
         <div id="page-left" class="book-page bg-polkadot p-6 border-r border-black/20"></div>
         <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine pointer-events-none"></div>
         <div id="page-right" class="book-page bg-kraft p-6 border-l border-black/20"></div>
+        <canvas id="draw-canvas" class="hidden absolute inset-0 z-30 cursor-crosshair"></canvas>
       </div>
     </div>
 
@@ -193,12 +204,12 @@
       </div>
 
       <div>
-        <label class="block text-xs mb-1 text-amber-300/80">Estilo de Fuente:</label>
-        <select id="modal-font-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
-          <option value="font-schoolbell" selected>Schoolbell (Escolar / Manuscrita)</option>
-          <option value="font-flavors">Flavors (Divertida / Decorativa)</option>
-          <option value="font-comicneue">Comic Neue (Limpia / Cómic)</option>
-          <option value="font-caveat">Caveat (Marcador Cursiva)</option>
+        <label class="block text-xs mb-1 text-amber-300/80">Estilo de Fuente (Vista Previa):</label>
+        <select id="modal-font-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-12 px-2">
+          <option value="font-schoolbell" class="font-schoolbell text-lg" selected>Schoolbell - Escolar / Manuscrita</option>
+          <option value="font-flavors" class="font-flavors text-lg">Flavors - Divertida / Decorativa</option>
+          <option value="font-comicneue" class="font-comicneue text-lg">Comic Neue - Limpia / Cómic</option>
+          <option value="font-caveat" class="font-caveat text-xl">Caveat - Marcador Cursiva</option>
         </select>
       </div>
 
@@ -219,7 +230,10 @@
       <div>
         <label class="block text-xs mb-1 text-amber-300/80">Tamaño de letra:</label>
         <select id="modal-size-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
-          <option value="text-2xl">Mediano</option>
+          <option value="text-xs">Micro (Muy Pequeña)</option>
+          <option value="text-sm">Pequeña</option>
+          <option value="text-base">Normal</option>
+          <option value="text-2xl">Mediana</option>
           <option value="text-4xl" selected>Grande</option>
           <option value="text-5xl">Muy Grande</option>
         </select>
@@ -267,21 +281,87 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'scrapbook_album_data_v2';
+    const STORAGE_KEY = 'scrapbook_album_data_v3';
     let currentSpread = 0;
     let spreads = [
-      { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [] }
+      { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [], drawData: null }
     ];
 
     let activeElement = null;
-    let currentEditTarget = null;
     let selectedStickerSide = 'right';
     let selectedPhotoSide = 'right';
 
+    /* Canvas de Dibujo */
+    let drawCanvas, drawCtx;
+    let isDrawing = false;
+    let isDrawModeActive = false;
+
     document.addEventListener('DOMContentLoaded', () => {
+      initCanvas();
       loadSavedData();
       renderSpread();
     });
+
+    function initCanvas() {
+      drawCanvas = document.getElementById('draw-canvas');
+      const spreadEl = document.getElementById('pages-spread');
+      drawCanvas.width = spreadEl.clientWidth || 800;
+      drawCanvas.height = spreadEl.clientHeight || 540;
+      drawCtx = drawCanvas.getContext('2d');
+      drawCtx.lineCap = 'round';
+      drawCtx.lineJoin = 'round';
+
+      drawCanvas.addEventListener('mousedown', startDrawing);
+      drawCanvas.addEventListener('mousemove', draw);
+      drawCanvas.addEventListener('mouseup', stopDrawing);
+      drawCanvas.addEventListener('mouseleave', stopDrawing);
+    }
+
+    function toggleDrawingMode() {
+      isDrawModeActive = !isDrawModeActive;
+      const btn = document.getElementById('btn-draw');
+      if (isDrawModeActive) {
+        drawCanvas.classList.remove('hidden');
+        btn.classList.replace('bg-purple-800', 'bg-green-700');
+        btn.innerText = '✅ Finalizar Dibujo';
+      } else {
+        drawCanvas.classList.add('hidden');
+        btn.classList.replace('bg-green-700', 'bg-purple-800');
+        btn.innerText = '🎨 Modo Dibujar';
+        saveToLocalStorage();
+      }
+    }
+
+    function startDrawing(e) {
+      if (!isDrawModeActive) return;
+      isDrawing = true;
+      const rect = drawCanvas.getBoundingClientRect();
+      drawCtx.beginPath();
+      drawCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function draw(e) {
+      if (!isDrawing || !isDrawModeActive) return;
+      const rect = drawCanvas.getBoundingClientRect();
+      drawCtx.strokeStyle = document.getElementById('draw-color').value;
+      drawCtx.lineWidth = 3;
+      drawCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      drawCtx.stroke();
+    }
+
+    function stopDrawing() {
+      if (isDrawing) {
+        isDrawing = false;
+        drawCtx.closePath();
+        spreads[currentSpread].drawData = drawCanvas.toDataURL();
+      }
+    }
+
+    function clearCanvas() {
+      drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      spreads[currentSpread].drawData = null;
+      saveToLocalStorage();
+    }
 
     function saveCurrentSpreadState() {
       const leftPage = document.getElementById('page-left');
@@ -290,8 +370,13 @@
 
       document.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
 
-      spreads[currentSpread].leftContent = Array.from(leftPage.children).map(el => el.outerHTML);
-      spreads[currentSpread].rightContent = Array.from(rightPage.children).map(el => el.outerHTML);
+      spreads[currentSpread] = {
+        leftBg: document.getElementById('select-left-bg').value,
+        rightBg: document.getElementById('select-right-bg').value,
+        leftContent: Array.from(leftPage.children).map(el => el.outerHTML),
+        rightContent: Array.from(rightPage.children).map(el => el.outerHTML),
+        drawData: drawCanvas ? drawCanvas.toDataURL() : null
+      };
     }
 
     function saveToLocalStorage() {
@@ -322,7 +407,7 @@
     }
 
     function renderSpread() {
-      const data = spreads[currentSpread];
+      const data = spreads[currentSpread] || { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [], drawData: null };
       const pageLeft = document.getElementById('page-left');
       const pageRight = document.getElementById('page-right');
 
@@ -334,6 +419,14 @@
 
       pageLeft.innerHTML = (data.leftContent || []).join('');
       pageRight.innerHTML = (data.rightContent || []).join('');
+
+      // Cargar dibujo del canvas
+      drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      if (data.drawData) {
+        const img = new Image();
+        img.onload = () => drawCtx.drawImage(img, 0, 0);
+        img.src = data.drawData;
+      }
 
       document.querySelectorAll('.draggable-item').forEach(makeDraggable);
 
@@ -351,7 +444,8 @@
           leftBg: 'bg-kraft',
           rightBg: 'bg-crumpled',
           leftContent: [],
-          rightContent: []
+          rightContent: [],
+          drawData: null
         });
       }
 
@@ -429,7 +523,7 @@
       reader.readAsDataURL(file);
     }
 
-    /* FOTOS (Compresión JPEG para guardar espacio) */
+    /* FOTOS */
     function triggerPhotoUpload() {
       document.getElementById('photo-modal').classList.remove('hidden');
     }
@@ -458,10 +552,11 @@
     function createPolaroid(imgSrc, side = 'left') {
       const container = document.getElementById(side === 'left' ? 'page-left' : 'page-right');
       const item = document.createElement('div');
-      item.className = 'draggable-item p-3 bg-amber-50/95 shadow-xl border border-stone-300/60 -rotate-2';
+      item.className = 'draggable-item p-3 bg-amber-50/95 shadow-xl border border-stone-300/60';
       item.style.left = '40px';
       item.style.top = '60px';
       item.style.width = '220px';
+      item.dataset.rotation = '0';
 
       item.innerHTML = `
         <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200 pointer-events-none">
@@ -474,7 +569,7 @@
       container.appendChild(item);
     }
 
-    /* STICKERS (PNG transparente preservado) */
+    /* STICKERS */
     function triggerStickerUpload() {
       document.getElementById('sticker-modal').classList.remove('hidden');
     }
@@ -503,10 +598,11 @@
     function createSticker(imgSrc, side = 'right') {
       const container = document.getElementById(side === 'left' ? 'page-left' : 'page-right');
       const item = document.createElement('div');
-      item.className = 'draggable-item rotate-3';
+      item.className = 'draggable-item';
       item.style.left = '60px';
       item.style.top = '80px';
       item.style.width = '120px';
+      item.dataset.rotation = '0';
 
       item.innerHTML = `<img src="${imgSrc}" class="w-full h-auto drop-shadow-md pointer-events-none">`;
 
@@ -516,7 +612,6 @@
 
     /* TEXTOS */
     function addTextPrompt() {
-      currentEditTarget = null;
       document.getElementById('modal-text-input').value = '';
       document.getElementById('text-modal').classList.remove('hidden');
     }
@@ -536,11 +631,12 @@
 
       const container = document.getElementById(targetSide === 'left' ? 'page-left' : 'page-right');
       const item = document.createElement('div');
-      item.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
+      item.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab`;
       item.style.left = '40px';
       item.style.top = '60px';
       item.style.color = color;
       item.innerText = text;
+      item.dataset.rotation = '0';
 
       makeDraggable(item);
       container.appendChild(item);
@@ -549,21 +645,31 @@
       saveToLocalStorage();
     }
 
-    /* ARRASTRAR Y REDIMENSIONAR */
+    /* ARRASTRAR, REDIMENSIONAR Y ROTAR CON RUEDA */
     function makeDraggable(element) {
       let posX = 0, posY = 0, initialX = 0, initialY = 0;
+      let rotation = parseInt(element.dataset.rotation || 0);
 
       element.onpointerdown = dragMouseDown;
 
       element.onwheel = function(e) {
         e.preventDefault();
-        let currentWidth = parseInt(element.style.width) || 120;
-        if (e.deltaY < 0) {
-          currentWidth += 8;
+        
+        // Con SHIFT se ROTA
+        if (e.shiftKey) {
+          rotation += e.deltaY > 0 ? 5 : -5;
+          element.dataset.rotation = rotation;
+          element.style.transform = `rotate(${rotation}deg)`;
         } else {
-          currentWidth = Math.max(30, currentWidth - 8);
+          // Sin SHIFT se CAMBIA TAMAÑO
+          let currentWidth = parseInt(element.style.width) || element.clientWidth || 120;
+          if (e.deltaY < 0) {
+            currentWidth += 8;
+          } else {
+            currentWidth = Math.max(20, currentWidth - 8);
+          }
+          element.style.width = currentWidth + 'px';
         }
-        element.style.width = currentWidth + 'px';
         saveToLocalStorage();
       };
 
