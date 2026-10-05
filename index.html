@@ -3,337 +3,365 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bitácora Scrapbook - Bruna, Lena, Yone & Marico</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Bitácora Scrapbook - ÁIbum Interactivo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Shadows+Into+Light&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              gold: '#D4AF37',
-              dark: '#0D0E12',
-              paper: '#161822',
-              border: '#2A2D3A'
-            }
-          },
-          fontFamily: {
-            cinzel: ['Cinzel', 'serif'],
-            handwriting: ['Caveat', 'cursive'],
-            sans: ['Plus Jakarta Sans', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body {
-      background-color: #08090C;
-      color: #E2E8F0;
+      background-color: #2b1810;
+      /* Fondo estilo mesa de madera */
+      background-image: radial-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 0),
+                        linear-gradient(to right, #24140e, #361f15, #24140e);
+      background-size: 20px 20px, 100% 100%;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-image: radial-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 0);
+      user-select: none;
+    }
+
+    .handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Estructura del libro abierto */
+    .book-cover {
+      background: #1a0f0a;
+      border: 8px solid #422517;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.9);
+      border-radius: 20px;
+    }
+
+    .book-page {
+      position: relative;
+      min-height: 580px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.3);
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    /* Patrones de fondo seleccionables */
+    .bg-kraft {
+      background-color: #d7b38c;
+      background-image: radial-gradient(#c29b70 1px, transparent 0);
+      background-size: 16px 16px;
+    }
+    .bg-polkadot {
+      background-color: #ba2d32;
+      background-image: radial-gradient(#ffffff 3px, transparent 0);
       background-size: 24px 24px;
     }
-    
-    .gold-text {
-      background: linear-gradient(135deg, #FFF0B3 0%, #D4AF37 50%, #997A15 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .bg-gingham {
+      background-color: #f7f3ed;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(186, 45, 50, 0.2) 15px, rgba(186, 45, 50, 0.2) 30px),
+                        repeating-linear-gradient(-90deg, transparent, transparent 15px, rgba(186, 45, 50, 0.2) 15px, rgba(186, 45, 50, 0.2) 30px);
+    }
+    .bg-crumpled {
+      background-color: #e5d3b3;
+      background-image: radial-gradient(rgba(0,0,0,0.08) 2px, transparent 0);
+      background-size: 12px 12px;
     }
 
-    /* Estilo Polaroid Scrapbook */
-    .polaroid-card {
-      background: #1C1E2A;
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Elementos arrastables (Stickers y Notas) */
+    .draggable-item {
+      position: absolute;
+      cursor: grab;
+      touch-action: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-    .polaroid-card:hover {
-      transform: scale(1.03) rotate(0deg) !important;
-      z-index: 30 !important;
-      border-color: rgba(212, 175, 55, 0.6);
+    .draggable-item:active {
+      cursor: grabbing;
+      transform: scale(1.04);
+      z-index: 100 !important;
     }
-
-    /* Cinta adhesiva en esquinas */
-    .tape {
-      background: rgba(212, 175, 55, 0.25);
-      backdrop-filter: blur(2px);
-      border: 1px dashed rgba(255,255,255,0.2);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    .draggable-item.selected {
+      outline: 2px dashed #ba2d32;
+      outline-offset: 4px;
     }
 
-    /* Enlaces en las descripciones */
-    .story-link {
-      color: #D4AF37;
-      text-decoration: underline;
-      font-weight: 600;
-      word-break: break-all;
-    }
-    .story-link:hover {
-      color: #FFF0B3;
+    /* Lomo del libro central */
+    .book-spine {
+      background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.4));
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
     }
 
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #08090C; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #2A2D3A; border-radius: 3px; }
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1a0f0a; }
+    ::-webkit-scrollbar-thumb { background: #422517; border-radius: 3px; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between custom-scrollbar">
+<body class="min-h-screen text-gray-800 flex flex-col justify-between p-2 sm:p-6">
 
-  <!-- ENCABEZADO -->
-  <header class="border-b border-brand-border/60 bg-brand-dark/95 sticky top-0 z-40 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <span class="text-3xl">🎨</span>
-        <div>
-          <h1 class="font-cinzel text-xl sm:text-2xl font-bold gold-text">SCRAPBOOK DE ROL</h1>
-          <p class="text-xs text-gray-400">Collage & Bitácora en la Nube</p>
-        </div>
-      </div>
-      <button onclick="openModal()" class="bg-brand-gold hover:bg-amber-500 text-black font-bold px-5 py-2.5 rounded-xl transition text-sm shadow-lg flex items-center space-x-2">
-        <span>✨ Agregar Recuerdo</span>
+  <!-- BARRA DE HERRAMIENTAS SUPERIOR -->
+  <header class="max-w-6xl mx-auto w-full bg-[#1e120c]/90 border border-[#422517] rounded-2xl p-3 sm:p-4 mb-4 flex flex-wrap gap-3 items-center justify-between shadow-2xl backdrop-blur-md text-white text-xs sm:text-sm">
+    <div class="flex items-center space-x-2">
+      <span class="text-2xl">📖</span>
+      <h1 class="font-bold tracking-wide text-amber-200">BITÁCORA SCRAPBOOK</h1>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="flex flex-wrap items-center gap-2">
+      <button onclick="addTextPrompt()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-600/40 transition">
+        ✏️ Texto / Marcador
+      </button>
+
+      <label class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 cursor-pointer transition">
+        🎀 Subir PNG / Sticker
+        <input type="file" id="sticker-upload" accept="image/*" class="hidden" onchange="uploadSticker(event)">
+      </label>
+
+      <label class="bg-amber-900 hover:bg-amber-800 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-700/40 cursor-pointer transition">
+        📷 Foto Polaroid
+        <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="uploadPhoto(event)">
+      </label>
+
+      <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
+        🗑️ Borrar Selección
       </button>
     </div>
   </header>
 
-  <!-- CONTENEDOR TIPO LIENZO / SCRAPBOOK -->
-  <main class="max-w-7xl mx-auto px-4 py-10 flex-1 w-full">
-    <div id="scrapbook-canvas" class="relative min-h-[650px] p-4 sm:p-8 rounded-3xl border border-brand-border/40 bg-brand-paper/50 backdrop-blur-sm">
+  <!-- CONTENEDOR DEL LIBRO ABIERTO -->
+  <main class="max-w-6xl mx-auto w-full flex-1 flex items-center justify-center my-2">
+    <div class="book-cover w-full p-3 sm:p-6 relative">
       
-      <!-- MENSAJE DE VACÍO -->
-      <div id="empty-state" class="hidden text-center py-28 border-2 border-dashed border-brand-border/60 rounded-2xl">
-        <p class="text-6xl mb-3">📌</p>
-        <h2 class="font-cinzel text-xl text-gray-300">Tu lienzo de recuerdos está limpio</h2>
-        <p class="text-gray-500 text-sm mt-1">Hacé clic en "Agregar Recuerdo" para subir tus fotos a la nube con stickers y notas.</p>
+      <!-- CONTROLES DE FONDO DE PÁGINAS -->
+      <div class="flex justify-between items-center mb-3 px-2 text-amber-200/80 text-xs font-semibold">
+        <div class="flex items-center gap-2">
+          <span>Página Izquierda:</span>
+          <select onchange="changePageBg('left', this.value)" class="bg-[#2b1810] border border-[#52301f] text-amber-100 rounded px-2 py-1 focus:outline-none">
+            <option value="bg-polkadot">🔴 Lunares Rojos</option>
+            <option value="bg-kraft">📦 Papel Kraft</option>
+            <option value="bg-gingham">🏁 Cuadrícula Vichy</option>
+            <option value="bg-crumpled">📜 Papel Arrugado</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span>Página Derecha:</span>
+          <select onchange="changePageBg('right', this.value)" class="bg-[#2b1810] border border-[#52301f] text-amber-100 rounded px-2 py-1 focus:outline-none">
+            <option value="bg-kraft">📦 Papel Kraft</option>
+            <option value="bg-polkadot">🔴 Lunares Rojos</option>
+            <option value="bg-gingham">🏁 Cuadrícula Vichy</option>
+            <option value="bg-crumpled">📜 Papel Arrugado</option>
+          </select>
+        </div>
       </div>
 
-      <!-- GRILLA DESORDENADA DE RECUERDOS -->
-      <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-        <!-- Render dinámico aquí -->
+      <!-- LIENZO DE LAS DOS PÁGINAS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-xl overflow-hidden relative shadow-2xl">
+        
+        <!-- PÁGINA IZQUIERDA -->
+        <div id="page-left" class="book-page bg-polkadot p-6 border-r border-black/20">
+          <!-- Elementos dinámicos -->
+        </div>
+
+        <!-- LOMO DEL LIBRO / COSTURA CENTRAL -->
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine z-30 pointer-events-none"></div>
+
+        <!-- PÁGINA DERECHA -->
+        <div id="page-right" class="book-page bg-kraft p-6 border-l border-black/20">
+          <!-- Elementos dinámicos -->
+        </div>
+
       </div>
     </div>
   </main>
 
-  <!-- MODAL DE CREACIÓN / EDICIÓN -->
-  <div id="entry-modal" class="hidden fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
-    <div class="bg-brand-paper border border-brand-gold/30 rounded-2xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl my-8">
+  <!-- MODAL PARA AÑADIR / EDITAR TEXTO -->
+  <div id="text-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="font-bold text-lg text-amber-200">Escribir Nota / Texto</h3>
       
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-1">✕</button>
+      <div>
+        <label class="block text-xs mb-1 text-amber-300/80">Texto en marcador mano alzada:</label>
+        <textarea id="modal-text-input" rows="3" class="w-full bg-[#150a06] border border-[#422517] rounded-xl p-3 text-white text-lg handwriting focus:outline-none focus:border-amber-500"></textarea>
+      </div>
 
-      <h2 id="modal-title" class="font-cinzel text-2xl font-bold gold-text mb-1">NUEVO RECUERDO</h2>
-      <p class="text-xs text-gray-400 mb-6">Sube tus fotos/videos a la nube e incluyela en el diario.</p>
-
-      <form id="entry-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
-        <input type="hidden" id="editing-id" value="">
-
-        <!-- TÍTULO -->
+      <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Título o Nota</label>
-          <input type="text" id="title-input" required placeholder="Ej: Encuentro en la distribuidora" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+          <label class="block text-xs mb-1 text-amber-300/80">Color del marcador:</label>
+          <input type="color" id="modal-color-input" value="#ba2d32" class="w-full h-10 bg-transparent cursor-pointer rounded">
         </div>
-
-        <!-- DESCRIPCIÓN CON ENLACES -->
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Historia / Anotación (Acepta enlaces http://...)</label>
-          <textarea id="story-input" required rows="3" placeholder="Escribí tu texto aquí... Podés pegar links a clips o canciones." class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold resize-none custom-scrollbar"></textarea>
-        </div>
-
-        <!-- URL DE IMAGEN O VIDEO (NUBE) -->
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">URL de la Imagen o Video (Nube / Discord / ImgBB / Streamable)</label>
-          <input type="url" id="url-input" required placeholder="https://i.ibb.co/... o link de foto/video" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
-          <p class="text-[11px] text-gray-500 mt-1">Pegá el enlace directo de tu imagen subida a ImgBB, Discord, PostImages, etc.</p>
-        </div>
-
-        <!-- ELECCIÓN DE STICKER / PNG DECORATIVO -->
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Sticker Decorativo (PNG)</label>
-          <select id="sticker-input" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
-            <option value="📌">📌 Chincheta / Pin</option>
-            <option value="🏷️">🏷️ Etiqueta Vintage</option>
-            <option value="⭐">⭐ Estela Dorada</option>
-            <option value="☕">☕ Mancha de Café</option>
-            <option value="🌸">🌸 Flor Prensada</option>
-            <option value="🎞️">🎞️ Cinta de Película</option>
+          <label class="block text-xs mb-1 text-amber-300/80">Tamaño de letra:</label>
+          <select id="modal-size-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
+            <option value="text-2xl">Mediano</option>
+            <option value="text-4xl" selected>Grande</option>
+            <option value="text-5xl">Muy Grande</option>
           </select>
         </div>
+      </div>
 
-        <!-- ROTACIÓN CREATIVA -->
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Inclinación en el diario</label>
-          <select id="rotation-input" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
-            <option value="-rotate-2">Ligeramente a la Izquierda (-2°)</option>
-            <option value="rotate-2">Ligeramente a la Derecha (+2°)</option>
-            <option value="-rotate-6">Inclinado Izquierda (-6°)</option>
-            <option value="rotate-6">Inclinado Derecha (+6°)</option>
-            <option value="rotate-0">Recto (0°)</option>
-          </select>
-        </div>
-
-        <button type="submit" class="w-full bg-brand-gold hover:bg-amber-500 text-black font-bold py-3 rounded-xl transition mt-2">
-          💾 Guardar en el Diario
-        </button>
-      </form>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeTextModal()" class="px-4 py-2 bg-stone-800 rounded-lg text-xs">Cancelar</button>
+        <button onclick="saveTextItem()" class="px-5 py-2 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Guardar en Libro</button>
+      </div>
     </div>
   </div>
 
-  <footer class="border-t border-brand-border/40 py-6 text-center text-xs text-gray-500">
-    Bitácora Scrapbook &copy; 2026 - Bruna, Lena, Yone & Marico
-  </footer>
-
   <script>
-    // Rotaciones y datos precargados
-    const initialEntries = [
-      {
-        id: 101,
-        title: "Lena en el taller",
-        story: "Dos horas en el casino fueron más que suficientes para que Lena supiera que ese no era su lugar. Un volantazo a tiempo la llevó directo al taller mecánico. Mirá más detalles en https://discord.com",
-        url: "https://i.postimg.cc/xXqms46q/imagen.jpg",
-        sticker: "📌",
-        rotation: "-rotate-3",
-        date: "04 Oct 2026"
-      }
-    ];
+    let activeElement = null;
+    let currentEditTarget = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      let entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
-      if (entries.length === 0) {
-        entries = initialEntries;
-        localStorage.setItem('rp_scrapbook_cloud', JSON.stringify(entries));
-      }
-      renderGallery();
-    });
-
-    function openModal() {
-      document.getElementById('editing-id').value = '';
-      document.getElementById('modal-title').innerText = 'NUEVO RECUERDO';
-      document.getElementById('entry-modal').classList.remove('hidden');
-      document.getElementById('entry-form').reset();
+    // Cambiar fondos de página
+    function changePageBg(page, bgClass) {
+      const pageEl = document.getElementById(`page-${page}`);
+      pageEl.className = `book-page ${bgClass} p-6 ${page === 'left' ? 'border-r' : 'border-l'} border-black/20`;
     }
 
-    function closeModal() {
-      document.getElementById('entry-modal').classList.add('hidden');
+    // Subir Foto Polaroid
+    function uploadPhoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        createPolaroid(e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
 
-    function handleFormSubmit(e) {
-      e.preventDefault();
-      const editingId = document.getElementById('editing-id').value;
-      const title = document.getElementById('title-input').value.trim();
-      const story = document.getElementById('story-input').value.trim();
-      const url = document.getElementById('url-input').value.trim();
-      const sticker = document.getElementById('sticker-input').value;
-      const rotation = document.getElementById('rotation-input').value;
+    function createPolaroid(imgSrc) {
+      const container = document.getElementById('page-left');
+      const item = document.createElement('div');
+      item.className = 'draggable-item p-3 bg-amber-50/95 shadow-xl border border-stone-300/60 -rotate-2';
+      item.style.left = '40px';
+      item.style.top = '60px';
+      item.style.width = '220px';
 
-      let entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
+      item.innerHTML = `
+        <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200">
+          <img src="${imgSrc}" class="w-full h-full object-cover">
+        </div>
+        <p class="handwriting text-center text-xl text-stone-800 leading-none py-1" contenteditable="true">Mi Recuerdo</p>
+      `;
 
-      if (editingId) {
-        entries = entries.map(item => item.id == editingId ? { ...item, title, story, url, sticker, rotation } : item);
+      makeDraggable(item);
+      container.appendChild(item);
+    }
+
+    // Subir Sticker / PNG
+    function uploadSticker(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        createSticker(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function createSticker(imgSrc) {
+      const container = document.getElementById('page-right');
+      const item = document.createElement('div');
+      item.className = 'draggable-item rotate-3';
+      item.style.left = '60px';
+      item.style.top = '80px';
+      item.style.width = '120px';
+
+      item.innerHTML = `<img src="${imgSrc}" class="w-full h-auto drop-shadow-md pointer-events-none">`;
+
+      makeDraggable(item);
+      container.appendChild(item);
+    }
+
+    // Modal de Texto
+    function addTextPrompt() {
+      currentEditTarget = null;
+      document.getElementById('modal-text-input').value = '';
+      document.getElementById('text-modal').classList.remove('hidden');
+    }
+
+    function closeTextModal() {
+      document.getElementById('text-modal').classList.add('hidden');
+    }
+
+    function saveTextItem() {
+      const text = document.getElementById('modal-text-input').value;
+      const color = document.getElementById('modal-color-input').value;
+      const size = document.getElementById('modal-size-input').value;
+
+      if (!text.trim()) return;
+
+      if (currentEditTarget) {
+        currentEditTarget.style.color = color;
+        currentEditTarget.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab`;
+        currentEditTarget.innerText = text;
       } else {
-        entries.unshift({
-          id: Date.now(),
-          title,
-          story,
-          url,
-          sticker,
-          rotation,
-          date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })
-        });
+        const container = document.getElementById('page-right');
+        const item = document.createElement('div');
+        item.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
+        item.style.left = '30px';
+        item.style.top = '40px';
+        item.style.color = color;
+        item.innerText = text;
+
+        item.ondblclick = function() {
+          currentEditTarget = item;
+          document.getElementById('modal-text-input').value = item.innerText;
+          document.getElementById('text-modal').classList.remove('hidden');
+        };
+
+        makeDraggable(item);
+        container.appendChild(item);
       }
 
-      localStorage.setItem('rp_scrapbook_cloud', JSON.stringify(entries));
-      closeModal();
-      renderGallery();
+      closeTextModal();
     }
 
-    function editEntry(id) {
-      const entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
-      const item = entries.find(e => e.id === id);
-      if (!item) return;
+    // Lógica para arrastrar y soltar (Drag and Drop)
+    function makeDraggable(element) {
+      let posX = 0, posY = 0, initialX = 0, initialY = 0;
 
-      openModal();
-      document.getElementById('editing-id').value = item.id;
-      document.getElementById('modal-title').innerText = 'EDITAR RECUERDO';
-      document.getElementById('title-input').value = item.title;
-      document.getElementById('story-input').value = item.story;
-      document.getElementById('url-input').value = item.url;
-      document.getElementById('sticker-input').value = item.sticker;
-      document.getElementById('rotation-input').value = item.rotation;
-    }
+      element.onpointerdown = dragMouseDown;
 
-    function deleteEntry(id) {
-      if (!confirm('¿Eliminar esta foto del lienzo?')) return;
-      let entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
-      entries = entries.filter(e => e.id !== id);
-      localStorage.setItem('rp_scrapbook_cloud', JSON.stringify(entries));
-      renderGallery();
-    }
+      function dragMouseDown(e) {
+        e.preventDefault();
+        selectElement(element);
 
-    function formatStoryWithLinks(text) {
-      const escaped = escapeHtml(text);
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      return escaped.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener" class="story-link">${url}</a>`);
-    }
+        initialX = e.clientX;
+        initialY = e.clientY;
 
-    function renderGallery() {
-      const grid = document.getElementById('gallery-grid');
-      const emptyState = document.getElementById('empty-state');
-      const entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
-
-      if (entries.length === 0) {
-        grid.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
+        document.onpointermove = elementDrag;
+        document.onpointerup = closeDragElement;
       }
 
-      emptyState.classList.add('hidden');
-      grid.innerHTML = entries.map((item) => {
-        const isVideo = item.url.includes('streamable.com') || item.url.endsWith('.mp4') || item.url.endsWith('.webm');
+      function elementDrag(e) {
+        e.preventDefault();
+        posX = initialX - e.clientX;
+        posY = initialY - e.clientY;
+        initialX = e.clientX;
+        initialY = e.clientY;
 
-        return `
-          <article class="polaroid-card p-4 rounded-xl relative ${item.rotation} transform duration-300">
-            
-            <!-- CINTA ADHESIVA VIRTUAL EN LA ESQUINA -->
-            <div class="tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 -rotate-2 z-20"></div>
+        element.style.top = (element.offsetTop - posY) + "px";
+        element.style.left = (element.offsetLeft - posX) + "px";
+      }
 
-            <!-- STICKER DECORATIVO -->
-            <div class="absolute -top-3 -right-2 text-3xl z-20 drop-shadow-md select-none">${item.sticker}</div>
-
-            <!-- MARCO DE LA FOTO -->
-            <div class="bg-black rounded-lg overflow-hidden border border-brand-border/40 aspect-[4/3] flex items-center justify-center relative mb-4">
-              ${isVideo 
-                ? `<video src="${item.url}" controls class="w-full h-full object-cover"></video>` 
-                : `<img src="${item.url}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover">`
-              }
-              <span class="absolute bottom-2 right-2 bg-black/70 text-gray-300 text-[10px] px-2 py-0.5 rounded backdrop-blur">
-                ${item.date}
-              </span>
-            </div>
-
-            <!-- TEXTOS Y NOTAS -->
-            <div class="space-y-2">
-              <h3 class="font-cinzel text-base font-bold text-brand-gold">${escapeHtml(item.title)}</h3>
-              <p class="font-handwriting text-lg text-gray-200 leading-snug break-words">
-                ${formatStoryWithLinks(item.story)}
-              </p>
-            </div>
-
-            <!-- BOTONES -->
-            <div class="mt-4 pt-3 border-t border-brand-border/40 flex justify-between items-center text-xs">
-              <button onclick="editEntry(${item.id})" class="text-brand-gold hover:underline font-medium">✏️ Editar</button>
-              <button onclick="deleteEntry(${item.id})" class="text-red-400 hover:underline">🗑️ Borrar</button>
-            </div>
-
-          </article>
-        `;
-      }).join('');
+      function closeDragElement() {
+        document.onpointermove = null;
+        document.onpointerup = null;
+      }
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.innerText = text;
-      return div.innerHTML;
+    function selectElement(el) {
+      if (activeElement) {
+        activeElement.classList.remove('selected');
+      }
+      activeElement = el;
+      activeElement.classList.add('selected');
     }
+
+    function deleteSelected() {
+      if (activeElement) {
+        activeElement.remove();
+        activeElement = null;
+      }
+    }
+
+    // Inicializar con tu foto de Lena cargada de muestra
+    document.addEventListener('DOMContentLoaded', () => {
+      createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg");
+    });
   </script>
 </body>
 </html>
