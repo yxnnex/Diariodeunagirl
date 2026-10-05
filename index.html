@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diario Creativo - Bruna, Lena, Yone & Marico</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Bitácora Scrapbook - Bruna, Lena, Yone & Marico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -13,15 +13,14 @@
           colors: {
             brand: {
               gold: '#D4AF37',
-              goldHover: '#B3912A',
-              dark: '#0B0C0E',
-              bookBg: '#12141A',
-              card: '#181A22',
-              border: '#2A2D38'
+              dark: '#0D0E12',
+              paper: '#161822',
+              border: '#2A2D3A'
             }
           },
           fontFamily: {
             cinzel: ['Cinzel', 'serif'],
+            handwriting: ['Caveat', 'cursive'],
             sans: ['Plus Jakarta Sans', 'sans-serif']
           }
         }
@@ -30,394 +29,256 @@
   </script>
   <style>
     body {
-      background-color: #0B0C0E;
+      background-color: #08090C;
       color: #E2E8F0;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      background-image: radial-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 0);
+      background-size: 24px 24px;
     }
-    .gold-gradient-text {
+    
+    .gold-text {
       background: linear-gradient(135deg, #FFF0B3 0%, #D4AF37 50%, #997A15 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .book-container {
-      background: #12141A;
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(0, 0, 0, 0.5);
+
+    /* Estilo Polaroid Scrapbook */
+    .polaroid-card {
+      background: #1C1E2A;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .glass-card {
-      background: rgba(24, 26, 34, 0.9);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 175, 55, 0.15);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    .polaroid-card:hover {
+      transform: scale(1.03) rotate(0deg) !important;
+      z-index: 30 !important;
+      border-color: rgba(212, 175, 55, 0.6);
     }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
+
+    /* Cinta adhesiva en esquinas */
+    .tape {
+      background: rgba(212, 175, 55, 0.25);
+      backdrop-filter: blur(2px);
+      border: 1px dashed rgba(255,255,255,0.2);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #0B0C0E;
+
+    /* Enlaces en las descripciones */
+    .story-link {
+      color: #D4AF37;
+      text-decoration: underline;
+      font-weight: 600;
+      word-break: break-all;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #2A2D38;
-      border-radius: 3px;
+    .story-link:hover {
+      color: #FFF0B3;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #D4AF37;
-    }
+
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #08090C; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #2A2D3A; border-radius: 3px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between custom-scrollbar">
 
   <!-- ENCABEZADO -->
-  <header class="border-b border-brand-border/60 bg-brand-dark/95 sticky top-0 z-30 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <header class="border-b border-brand-border/60 bg-brand-dark/95 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-11 h-11 rounded-full border border-brand-gold/40 flex items-center justify-center bg-brand-gold/10 shadow-inner">
-          <span class="text-brand-gold font-cinzel text-2xl">📖</span>
-        </div>
+        <span class="text-3xl">🎨</span>
         <div>
-          <h1 class="font-cinzel text-xl sm:text-2xl font-bold gold-gradient-text tracking-wider">BITÁCORA DE ROL</h1>
-          <p class="text-xs text-gray-400">Historias, Fotos y Clips de Bruna, Lena, Yone y Marico</p>
+          <h1 class="font-cinzel text-xl sm:text-2xl font-bold gold-text">SCRAPBOOK DE ROL</h1>
+          <p class="text-xs text-gray-400">Collage & Bitácora en la Nube</p>
         </div>
       </div>
-      <div class="flex space-x-2">
-        <button onclick="exportData()" class="hidden sm:flex bg-black/50 hover:bg-black/80 text-gray-300 border border-brand-border text-xs font-medium px-3.5 py-2.5 rounded-xl items-center space-x-1 transition">
-          <span>💾 Copia Resp.</span>
-        </button>
-        <button onclick="openModal()" class="bg-brand-gold hover:bg-brand-goldHover text-black font-bold px-4 sm:px-5 py-2.5 rounded-xl transition duration-200 flex items-center space-x-2 text-sm shadow-lg shadow-brand-gold/10">
-          <span>+ Nueva Página</span>
-        </button>
-      </div>
+      <button onclick="openModal()" class="bg-brand-gold hover:bg-amber-500 text-black font-bold px-5 py-2.5 rounded-xl transition text-sm shadow-lg flex items-center space-x-2">
+        <span>✨ Agregar Recuerdo</span>
+      </button>
     </div>
   </header>
 
-  <!-- CONTENIDO PRINCIPAL (ESTILO LIBRO ABIERTO) -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
-    
-    <!-- NOTIFICACIONES / TOAST -->
-    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-900/90 text-green-200 border border-green-500/30 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md transition-all duration-300">
-      <span id="toast-message">Operación realizada con éxito</span>
-    </div>
-
-    <!-- LIBRO CONTENEDOR -->
-    <div class="book-container rounded-3xl p-4 sm:p-8 min-h-[600px] relative">
+  <!-- CONTENEDOR TIPO LIENZO / SCRAPBOOK -->
+  <main class="max-w-7xl mx-auto px-4 py-10 flex-1 w-full">
+    <div id="scrapbook-canvas" class="relative min-h-[650px] p-4 sm:p-8 rounded-3xl border border-brand-border/40 bg-brand-paper/50 backdrop-blur-sm">
       
-      <!-- LOMO / DETALLE DORADO DE LIBRO -->
-      <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-brand-gold/30 to-transparent pointer-events-none"></div>
-
-      <!-- MENSAJE DE ÁLBUM VACÍO -->
-      <div id="empty-state" class="hidden text-center py-24 border border-dashed border-brand-border rounded-2xl bg-black/20 my-8">
-        <p class="text-5xl mb-4">📷</p>
-        <h2 class="text-xl font-semibold text-gray-300 font-cinzel">Tu libro de recuerdos está vacío</h2>
-        <p class="text-gray-500 text-sm mt-2 max-w-md mx-auto">Hacé clic en "+ Nueva Página" para empezar a plasmar tus momentos y videos.</p>
+      <!-- MENSAJE DE VACÍO -->
+      <div id="empty-state" class="hidden text-center py-28 border-2 border-dashed border-brand-border/60 rounded-2xl">
+        <p class="text-6xl mb-3">📌</p>
+        <h2 class="font-cinzel text-xl text-gray-300">Tu lienzo de recuerdos está limpio</h2>
+        <p class="text-gray-500 text-sm mt-1">Hacé clic en "Agregar Recuerdo" para subir tus fotos a la nube con stickers y notas.</p>
       </div>
 
-      <!-- GRILLA DE PÁGINAS DEL LIBRO -->
-      <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Las tarjetas se renderizan dinámicamente aquí -->
+      <!-- GRILLA DESORDENADA DE RECUERDOS -->
+      <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+        <!-- Render dinámico aquí -->
       </div>
     </div>
   </main>
 
-  <!-- MODAL PARA AÑADIR / EDITAR PÁGINA -->
+  <!-- MODAL DE CREACIÓN / EDICIÓN -->
   <div id="entry-modal" class="hidden fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
-    <div class="glass-card rounded-2xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl my-8">
+    <div class="bg-brand-paper border border-brand-gold/30 rounded-2xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl my-8">
       
-      <!-- BOTÓN CERRAR -->
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-2 rounded-lg hover:bg-white/5 transition">
-        ✕
-      </button>
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-1">✕</button>
 
-      <h2 id="modal-title" class="font-cinzel text-2xl font-bold gold-gradient-text mb-1">AÑADIR NUEVA PÁGINA</h2>
-      <p class="text-xs text-gray-400 mb-6">Guarda o modifica un fragmento de la bitácora con video o imagen.</p>
+      <h2 id="modal-title" class="font-cinzel text-2xl font-bold gold-text mb-1">NUEVO RECUERDO</h2>
+      <p class="text-xs text-gray-400 mb-6">Sube tus fotos/videos a la nube e incluyela en el diario.</p>
 
-      <form id="entry-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+      <form id="entry-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
         <input type="hidden" id="editing-id" value="">
-        
+
         <!-- TÍTULO -->
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Título del Momento</label>
-          <input type="text" id="title-input" required placeholder="Ej: Lena y Yone escabulléndose en la fiesta" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-gold transition">
+          <label class="block text-xs font-medium text-gray-300 mb-1">Título o Nota</label>
+          <input type="text" id="title-input" required placeholder="Ej: Encuentro en la distribuidora" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
         </div>
 
-        <!-- FRASE / TEXTO -->
+        <!-- DESCRIPCIÓN CON ENLACES -->
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Frase / Fragmento de la Historia</label>
-          <textarea id="story-input" required rows="3" placeholder="Escribí una frase o resumen de lo que pasó en este momento..." class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-gold transition resize-none custom-scrollbar"></textarea>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Historia / Anotación (Acepta enlaces http://...)</label>
+          <textarea id="story-input" required rows="3" placeholder="Escribí tu texto aquí... Podés pegar links a clips o canciones." class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold resize-none custom-scrollbar"></textarea>
         </div>
 
-        <!-- TIPO DE RECURSO (PESTAÑAS) -->
+        <!-- URL DE IMAGEN O VIDEO (NUBE) -->
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-2">Tipo de Multimedia</label>
-          <div class="grid grid-cols-2 gap-2 bg-black/50 p-1 rounded-xl border border-brand-border">
-            <button type="button" id="tab-file" onclick="switchTab('file')" class="py-2 text-xs font-semibold rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold/30 transition">
-              📁 Archivo Local
-            </button>
-            <button type="button" id="tab-url" onclick="switchTab('url')" class="py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition">
-              🔗 URL Externa
-            </button>
-          </div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">URL de la Imagen o Video (Nube / Discord / ImgBB / Streamable)</label>
+          <input type="url" id="url-input" required placeholder="https://i.ibb.co/... o link de foto/video" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+          <p class="text-[11px] text-gray-500 mt-1">Pegá el enlace directo de tu imagen subida a ImgBB, Discord, PostImages, etc.</p>
         </div>
 
-        <!-- CAMPO: SUBIR ARCHIVO -->
-        <div id="file-container">
-          <label class="block text-xs font-medium text-gray-300 mb-1">Seleccionar Foto o Mini-Video</label>
-          <input type="file" id="file-input" accept="image/*,video/*" onchange="handleFileSelect(event)" class="w-full text-xs text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-border file:text-white hover:file:bg-brand-gold/20 hover:file:text-brand-gold file:transition cursor-pointer bg-black/40 rounded-xl border border-brand-border/60">
-          <p class="text-[11px] text-gray-500 mt-1">Imágenes (JPG, PNG, GIF) o videos de tu PC.</p>
+        <!-- ELECCIÓN DE STICKER / PNG DECORATIVO -->
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Sticker Decorativo (PNG)</label>
+          <select id="sticker-input" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+            <option value="📌">📌 Chincheta / Pin</option>
+            <option value="🏷️">🏷️ Etiqueta Vintage</option>
+            <option value="⭐">⭐ Estela Dorada</option>
+            <option value="☕">☕ Mancha de Café</option>
+            <option value="🌸">🌸 Flor Prensada</option>
+            <option value="🎞️">🎞️ Cinta de Película</option>
+          </select>
         </div>
 
-        <!-- CAMPO: URL EXTERNA -->
-        <div id="url-container" class="hidden">
-          <label class="block text-xs font-medium text-gray-300 mb-1">URL del Recurso (Streamable, Discord, Imgur)</label>
-          <input type="url" id="url-input" placeholder="https://streamable.com/... o enlace de Discord" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-gold transition">
+        <!-- ROTACIÓN CREATIVA -->
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Inclinación en el diario</label>
+          <select id="rotation-input" class="w-full bg-black/60 border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+            <option value="-rotate-2">Ligeramente a la Izquierda (-2°)</option>
+            <option value="rotate-2">Ligeramente a la Derecha (+2°)</option>
+            <option value="-rotate-6">Inclinado Izquierda (-6°)</option>
+            <option value="rotate-6">Inclinado Derecha (+6°)</option>
+            <option value="rotate-0">Recto (0°)</option>
+          </select>
         </div>
 
-        <!-- PREVISUALIZACIÓN -->
-        <div id="preview-box" class="hidden border border-brand-border/60 rounded-xl p-3 bg-black/40">
-          <p class="text-[10px] text-gray-400 text-center mb-2 font-semibold uppercase tracking-wider">Vista Previa Actual</p>
-          <div id="preview-media" class="max-h-48 rounded-lg overflow-hidden flex justify-center items-center bg-black"></div>
-        </div>
-
-        <!-- BARRA DE PROGRESO DE CARGA -->
-        <div id="progress-container" class="hidden space-y-2">
-          <div class="flex justify-between text-xs text-gray-300 font-medium">
-            <span id="progress-status">Procesando archivo...</span>
-            <span id="progress-percent">0%</span>
-          </div>
-          <div class="w-full bg-black/60 rounded-full h-2.5 overflow-hidden border border-brand-border/40">
-            <div id="progress-bar" class="bg-gradient-to-r from-amber-500 to-brand-gold h-full w-0 transition-all duration-200"></div>
-          </div>
-        </div>
-
-        <!-- BOTÓN GUARDAR -->
-        <button type="submit" id="submit-btn" class="w-full bg-brand-gold hover:bg-brand-goldHover text-black font-bold py-3.5 rounded-xl transition duration-200 shadow-lg shadow-brand-gold/10 flex justify-center items-center space-x-2">
-          <span>💾 Guardar en el Libro</span>
+        <button type="submit" class="w-full bg-brand-gold hover:bg-amber-500 text-black font-bold py-3 rounded-xl transition mt-2">
+          💾 Guardar en el Diario
         </button>
-
       </form>
     </div>
   </div>
 
-  <!-- PIE DE PÁGINA -->
-  <footer class="border-t border-brand-border/40 py-6 bg-brand-dark/80 mt-12 text-center text-xs text-gray-500">
-    Bitácora de Rol &copy; 2026 - Bruna, Lena, Yone & Marico.
+  <footer class="border-t border-brand-border/40 py-6 text-center text-xs text-gray-500">
+    Bitácora Scrapbook &copy; 2026 - Bruna, Lena, Yone & Marico
   </footer>
 
-  <!-- SCRIPT LÓGICA JAVASCRIPT -->
   <script>
-    let activeTab = 'file';
-    let selectedMediaData = null;
-
-    // Foto original precargada de Lena en el taller mecánico
+    // Rotaciones y datos precargados
     const initialEntries = [
       {
         id: 101,
-        title: "Lena",
-        story: "Dos horas en el casino fueron más que suficientes para que Lena supiera que ese no era su lugar. Un volantazo a tiempo la llevó directo al taller mecánico, donde entre grasa, motor y herramientas encontró un rumbo de verdad.",
-        media: {
-          type: "image",
-          url: "https://i.postimg.cc/xXqms46q/imagen.jpg"
-        },
-        date: "04 de Oct, 2026"
+        title: "Lena en el taller",
+        story: "Dos horas en el casino fueron más que suficientes para que Lena supiera que ese no era su lugar. Un volantazo a tiempo la llevó directo al taller mecánico. Mirá más detalles en https://discord.com",
+        url: "https://i.postimg.cc/xXqms46q/imagen.jpg",
+        sticker: "📌",
+        rotation: "-rotate-3",
+        date: "04 Oct 2026"
       }
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
-      let entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
+      let entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
       if (entries.length === 0) {
-        localStorage.setItem('rp_journal_entries', JSON.stringify(initialEntries));
+        entries = initialEntries;
+        localStorage.setItem('rp_scrapbook_cloud', JSON.stringify(entries));
       }
       renderGallery();
     });
 
     function openModal() {
       document.getElementById('editing-id').value = '';
-      document.getElementById('modal-title').innerText = 'AÑADIR NUEVA PÁGINA';
+      document.getElementById('modal-title').innerText = 'NUEVO RECUERDO';
       document.getElementById('entry-modal').classList.remove('hidden');
-      resetForm();
+      document.getElementById('entry-form').reset();
     }
 
     function closeModal() {
       document.getElementById('entry-modal').classList.add('hidden');
-      resetForm();
     }
 
-    function switchTab(tab) {
-      activeTab = tab;
-      const fileBtn = document.getElementById('tab-file');
-      const urlBtn = document.getElementById('tab-url');
-      const fileContainer = document.getElementById('file-container');
-      const urlContainer = document.getElementById('url-container');
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const editingId = document.getElementById('editing-id').value;
+      const title = document.getElementById('title-input').value.trim();
+      const story = document.getElementById('story-input').value.trim();
+      const url = document.getElementById('url-input').value.trim();
+      const sticker = document.getElementById('sticker-input').value;
+      const rotation = document.getElementById('rotation-input').value;
 
-      if (tab === 'file') {
-        fileBtn.className = "py-2 text-xs font-semibold rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold/30 transition";
-        urlBtn.className = "py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition";
-        fileContainer.classList.remove('hidden');
-        urlContainer.classList.add('hidden');
+      let entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
+
+      if (editingId) {
+        entries = entries.map(item => item.id == editingId ? { ...item, title, story, url, sticker, rotation } : item);
       } else {
-        urlBtn.className = "py-2 text-xs font-semibold rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold/30 transition";
-        fileBtn.className = "py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition";
-        urlContainer.classList.remove('hidden');
-        fileContainer.classList.add('hidden');
+        entries.unshift({
+          id: Date.now(),
+          title,
+          story,
+          url,
+          sticker,
+          rotation,
+          date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })
+        });
       }
-    }
 
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const progressContainer = document.getElementById('progress-container');
-      const progressBar = document.getElementById('progress-bar');
-      const progressPercent = document.getElementById('progress-percent');
-      const progressStatus = document.getElementById('progress-status');
-      const submitBtn = document.getElementById('submit-btn');
-
-      progressContainer.classList.remove('hidden');
-      submitBtn.disabled = true;
-      submitBtn.style.opacity = '0.5';
-
-      const reader = new FileReader();
-
-      reader.onprogress = function(e) {
-        if (e.lengthComputable) {
-          const percent = Math.round((e.loaded / e.total) * 100);
-          progressBar.style.width = percent + '%';
-          progressPercent.innerText = percent + '%';
-          progressStatus.innerText = 'Cargando archivo...';
-        }
-      };
-
-      reader.onload = function(e) {
-        progressBar.style.width = '100%';
-        progressPercent.innerText = '100%';
-        progressStatus.innerText = 'Completado';
-
-        const isVideo = file.type.startsWith('video/');
-        selectedMediaData = {
-          type: isVideo ? 'video' : 'image',
-          url: e.target.result
-        };
-
-        showPreview(selectedMediaData.type, selectedMediaData.url);
-        
-        setTimeout(() => {
-          progressContainer.classList.add('hidden');
-          submitBtn.disabled = false;
-          submitBtn.style.opacity = '1';
-        }, 400);
-      };
-
-      reader.readAsDataURL(file);
-    }
-
-    function showPreview(type, url) {
-      const previewBox = document.getElementById('preview-box');
-      const previewMedia = document.getElementById('preview-media');
-      previewBox.classList.remove('hidden');
-
-      if (type === 'video') {
-        previewMedia.innerHTML = `<video src="${url}" controls class="max-h-44 rounded object-contain"></video>`;
-      } else {
-        previewMedia.innerHTML = `<img src="${url}" class="max-h-44 rounded object-contain" alt="Vista previa">`;
-      }
-    }
-
-    function hidePreview() {
-      document.getElementById('preview-box').classList.add('hidden');
-      document.getElementById('preview-media').innerHTML = '';
-      selectedMediaData = null;
+      localStorage.setItem('rp_scrapbook_cloud', JSON.stringify(entries));
+      closeModal();
+      renderGallery();
     }
 
     function editEntry(id) {
-      const entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
+      const entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
       const item = entries.find(e => e.id === id);
       if (!item) return;
 
       openModal();
       document.getElementById('editing-id').value = item.id;
-      document.getElementById('modal-title').innerText = 'EDITAR PÁGINA';
+      document.getElementById('modal-title').innerText = 'EDITAR RECUERDO';
       document.getElementById('title-input').value = item.title;
       document.getElementById('story-input').value = item.story;
-
-      selectedMediaData = item.media;
-      showPreview(item.media.type, item.media.url);
-
-      if (item.media.url.startsWith('http')) {
-        switchTab('url');
-        document.getElementById('url-input').value = item.media.url;
-      } else {
-        switchTab('file');
-      }
+      document.getElementById('url-input').value = item.url;
+      document.getElementById('sticker-input').value = item.sticker;
+      document.getElementById('rotation-input').value = item.rotation;
     }
 
-    function handleFormSubmit(event) {
-      event.preventDefault();
+    function deleteEntry(id) {
+      if (!confirm('¿Eliminar esta foto del lienzo?')) return;
+      let entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
+      entries = entries.filter(e => e.id !== id);
+      localStorage.setItem('rp_scrapbook_cloud', JSON.stringify(entries));
+      renderGallery();
+    }
 
-      const editingId = document.getElementById('editing-id').value;
-      const title = document.getElementById('title-input').value.trim();
-      const story = document.getElementById('story-input').value.trim();
-      let media = selectedMediaData;
-
-      if (activeTab === 'url') {
-        let rawUrl = document.getElementById('url-input').value.trim();
-        if (rawUrl) {
-          if (rawUrl.includes('postimg.cc/') && !rawUrl.includes('i.postimg.cc')) {
-            const code = rawUrl.split('/').pop();
-            rawUrl = `https://i.postimg.cc/${code}/image.jpg`;
-          }
-
-          const isVideoUrl = rawUrl.includes('streamable.com') || rawUrl.endsWith('.mp4') || rawUrl.endsWith('.webm');
-          media = {
-            type: isVideoUrl ? 'video' : 'image',
-            url: rawUrl
-          };
-        }
-      }
-
-      if (!media || !media.url) {
-        alert('Por favor seleccioná un archivo o pegá una URL válida.');
-        return;
-      }
-
-      let entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
-
-      if (editingId) {
-        entries = entries.map(item => {
-          if (item.id == editingId) {
-            return {
-              ...item,
-              title: title,
-              story: story,
-              media: media
-            };
-          }
-          return item;
-        });
-        showToast('¡Página editada correctamente!');
-      } else {
-        const newEntry = {
-          id: Date.now(),
-          title: title,
-          story: story,
-          media: media,
-          date: new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'short', day: 'numeric' })
-        };
-        entries.unshift(newEntry);
-        showToast('¡Página guardada con éxito!');
-      }
-
-      try {
-        localStorage.setItem('rp_journal_entries', JSON.stringify(entries));
-        closeModal();
-        renderGallery();
-      } catch (err) {
-        alert('El archivo de video/foto es muy pesado para la memoria local del navegador.\n\nTe recomendamos usar la opción "URL Externa" (pegando un enlace de Discord o Streamable).');
-      }
+    function formatStoryWithLinks(text) {
+      const escaped = escapeHtml(text);
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return escaped.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener" class="story-link">${url}</a>`);
     }
 
     function renderGallery() {
       const grid = document.getElementById('gallery-grid');
       const emptyState = document.getElementById('empty-state');
-      const entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
+      const entries = JSON.parse(localStorage.getItem('rp_scrapbook_cloud') || '[]');
 
       if (entries.length === 0) {
         grid.innerHTML = '';
@@ -426,72 +287,46 @@
       }
 
       emptyState.classList.add('hidden');
-      grid.innerHTML = entries.map(item => `
-        <article class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between hover:border-brand-gold/40 transition duration-300">
-          <div class="relative bg-black aspect-video flex items-center justify-center overflow-hidden">
-            ${item.media.type === 'video' 
-              ? `<video src="${item.media.url}" controls class="w-full h-full object-cover"></video>`
-              : `<img src="${item.media.url}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover">`
-            }
-            <span class="absolute top-3 right-3 bg-black/80 text-gray-300 text-[10px] px-2.5 py-1 rounded-full border border-white/10 backdrop-blur-md">
-              ${item.date}
-            </span>
-          </div>
-          <div class="p-5 flex-1 flex flex-col justify-between">
-            <div>
-              <h3 class="font-cinzel text-lg font-bold text-brand-gold mb-2">${escapeHtml(item.title)}</h3>
-              <p class="text-sm text-gray-300 leading-relaxed italic">"${escapeHtml(item.story)}"</p>
+      grid.innerHTML = entries.map((item) => {
+        const isVideo = item.url.includes('streamable.com') || item.url.endsWith('.mp4') || item.url.endsWith('.webm');
+
+        return `
+          <article class="polaroid-card p-4 rounded-xl relative ${item.rotation} transform duration-300">
+            
+            <!-- CINTA ADHESIVA VIRTUAL EN LA ESQUINA -->
+            <div class="tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 -rotate-2 z-20"></div>
+
+            <!-- STICKER DECORATIVO -->
+            <div class="absolute -top-3 -right-2 text-3xl z-20 drop-shadow-md select-none">${item.sticker}</div>
+
+            <!-- MARCO DE LA FOTO -->
+            <div class="bg-black rounded-lg overflow-hidden border border-brand-border/40 aspect-[4/3] flex items-center justify-center relative mb-4">
+              ${isVideo 
+                ? `<video src="${item.url}" controls class="w-full h-full object-cover"></video>` 
+                : `<img src="${item.url}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover">`
+              }
+              <span class="absolute bottom-2 right-2 bg-black/70 text-gray-300 text-[10px] px-2 py-0.5 rounded backdrop-blur">
+                ${item.date}
+              </span>
             </div>
-            <div class="mt-5 pt-3 border-t border-brand-border/50 flex justify-between items-center text-xs">
-              <button onclick="editEntry(${item.id})" class="text-brand-gold hover:text-white transition flex items-center space-x-1 font-medium">
-                <span>✏️ Editar</span>
-              </button>
-              <button onclick="deleteEntry(${item.id})" class="text-red-400 hover:text-red-300 transition flex items-center space-x-1">
-                <span>🗑️ Eliminar</span>
-              </button>
+
+            <!-- TEXTOS Y NOTAS -->
+            <div class="space-y-2">
+              <h3 class="font-cinzel text-base font-bold text-brand-gold">${escapeHtml(item.title)}</h3>
+              <p class="font-handwriting text-lg text-gray-200 leading-snug break-words">
+                ${formatStoryWithLinks(item.story)}
+              </p>
             </div>
-          </div>
-        </article>
-      `).join('');
-    }
 
-    function deleteEntry(id) {
-      if (!confirm('¿Estás segura de borrar esta página del diario?')) return;
-      let entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
-      entries = entries.filter(e => e.id !== id);
-      localStorage.setItem('rp_journal_entries', JSON.stringify(entries));
-      renderGallery();
-      showToast('Página eliminada');
-    }
+            <!-- BOTONES -->
+            <div class="mt-4 pt-3 border-t border-brand-border/40 flex justify-between items-center text-xs">
+              <button onclick="editEntry(${item.id})" class="text-brand-gold hover:underline font-medium">✏️ Editar</button>
+              <button onclick="deleteEntry(${item.id})" class="text-red-400 hover:underline">🗑️ Borrar</button>
+            </div>
 
-    function resetForm() {
-      document.getElementById('entry-form').reset();
-      document.getElementById('editing-id').value = '';
-      document.getElementById('progress-container').classList.add('hidden');
-      document.getElementById('progress-bar').style.width = '0%';
-      document.getElementById('submit-btn').disabled = false;
-      document.getElementById('submit-btn').style.opacity = '1';
-      switchTab('file');
-      hidePreview();
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-message').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 3000);
-    }
-
-    function exportData() {
-      const entries = localStorage.getItem('rp_journal_entries') || '[]';
-      const blob = new Blob([entries], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `backup_diario_rol_${Date.now()}.json`;
-      a.click();
+          </article>
+        `;
+      }).join('');
     }
 
     function escapeHtml(text) {
