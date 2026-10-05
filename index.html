@@ -3,31 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bitácora de Rol - Álbum de Historias</title>
-  <!-- Tailwind CSS -->
+  <title>Diario Creativo - Bruna, Lena & Yone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            cinzel: ['Cinzel', 'serif'],
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          },
           colors: {
             brand: {
               gold: '#D4AF37',
-              dark: '#0e0e11',
-              card: '#18181c',
-              border: '#2a2a32',
-              accent: '#e5a93c'
+              goldHover: '#B3912A',
+              dark: '#0D0E11',
+              card: '#16181E',
+              border: '#2A2D37'
             }
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
           }
         }
       }
@@ -35,17 +29,17 @@
   </script>
   <style>
     body {
-      background-color: #0c0c0f;
-      color: #e2e8f0;
+      background-color: #0D0E11;
+      color: #E2E8F0;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .gold-gradient-text {
-      background: linear-gradient(135deg, #FFF 0%, #D4AF37 50%, #AA7C11 100%);
+      background: linear-gradient(135deg, #FFF0B3 0%, #D4AF37 50%, #997A15 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     .glass-card {
-      background: rgba(24, 24, 28, 0.85);
+      background: rgba(22, 24, 30, 0.85);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(212, 175, 55, 0.15);
     }
@@ -53,492 +47,387 @@
       width: 6px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: #121215;
+      background: #0D0E11;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #2d2d38;
-      border-radius: 4px;
+      background: #2A2D37;
+      border-radius: 3px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #d4af37;
+      background: #D4AF37;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between custom-scrollbar">
 
-  <!-- Header -->
-  <header class="border-b border-brand-border bg-brand-dark/90 sticky top-0 z-40 backdrop-blur-md">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+  <!-- ENCABEZADO -->
+  <header class="border-b border-brand-border bg-brand-dark/90 sticky top-0 z-30 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold">
-          <i data-lucide="book-open"></i>
+        <div class="w-10 h-10 rounded-full border border-brand-gold/40 flex items-center justify-center bg-brand-gold/10">
+          <span class="text-brand-gold font-cinzel text-xl font-bold">📖</span>
         </div>
         <div>
-          <h1 class="font-cinzel text-xl font-bold tracking-wide gold-gradient-text">ÁLBUM DE ROL</h1>
-          <p class="text-xs text-gray-400">Diario de ruta: Bruna, Lena & Yone</p>
+          <h1 class="font-cinzel text-xl sm:text-2xl font-bold gold-gradient-text tracking-wide">ÁLBUM DE ROL</h1>
+          <p class="text-xs text-gray-400">Bitácora de Historias, Fotos y Momentos</p>
         </div>
       </div>
-
-      <!-- Controls -->
-      <div class="flex items-center space-x-3">
-        <button id="viewToggleBtn" onclick="toggleView()" class="px-3 py-2 rounded-lg bg-brand-card hover:bg-zinc-800 border border-brand-border text-xs text-gray-300 flex items-center gap-2 transition">
-          <i data-lucide="layout-grid" class="w-4 h-4" id="viewIcon"></i>
-          <span id="viewText">Ver Grilla</span>
-        </button>
-
-        <button onclick="openModal()" class="px-4 py-2 rounded-lg bg-brand-gold hover:bg-yellow-500 text-black font-semibold text-xs flex items-center gap-2 transition shadow-lg shadow-brand-gold/20">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span>Nueva Página</span>
-        </button>
-      </div>
+      <button onclick="openModal()" class="bg-brand-gold hover:bg-brand-goldHover text-black font-semibold px-4 sm:px-5 py-2.5 rounded-xl transition duration-200 flex items-center space-x-2 text-sm shadow-lg shadow-brand-gold/10">
+        <span>+ Nueva Página</span>
+      </button>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- NOTIFICACIONES / TOAST -->
+    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-900/90 text-green-200 border border-green-500/30 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md transition-all duration-300">
+      <span id="toast-message">Operación realizada con éxito</span>
+    </div>
 
-    <!-- Modo Libro / Lector (Single Page View) -->
-    <section id="singleViewSection" class="max-w-4xl mx-auto">
-      <div class="glass-card rounded-2xl overflow-hidden shadow-2xl relative">
-        
-        <!-- Top bar inside card -->
-        <div class="px-6 py-4 border-b border-brand-border flex justify-between items-center text-xs text-gray-400">
-          <span id="pageCounter" class="font-cinzel text-brand-gold">PÁGINA 1 DE 1</span>
-          <span id="pageDate" class="italic">Capítulo Inicial</span>
-        </div>
+    <!-- MENSAL DE ÁLBUM VACÍO -->
+    <div id="empty-state" class="hidden text-center py-20 border-2 border-dashed border-brand-border rounded-2xl bg-brand-card/30 my-8">
+      <p class="text-4xl mb-3">📸</p>
+      <h2 class="text-xl font-semibold text-gray-300">Tu álbum todavía no tiene recuerdos</h2>
+      <p class="text-gray-500 text-sm mt-1 max-w-md mx-auto">Hacé clic en "+ Nueva Página" para empezar a guardar fotos, clips y momentos de tus personajes.</p>
+    </div>
 
-        <!-- Media Container (Video or Photo) -->
-        <div class="relative w-full bg-black min-h-[350px] max-h-[520px] flex items-center justify-center overflow-hidden group">
-          <div id="mediaDisplay" class="w-full h-full flex items-center justify-center">
-            <!-- Dynamic Content injected by JS -->
-          </div>
-          
-          <!-- Quick media type indicator -->
-          <div id="mediaTypeBadge" class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[10px] text-gray-300 flex items-center gap-1.5">
-            <i data-lucide="image" class="w-3 h-3"></i>
-            <span id="mediaTypeLabel">Imagen</span>
-          </div>
-        </div>
-
-        <!-- Narrative Content -->
-        <div class="p-8 space-y-4 bg-gradient-to-b from-brand-card to-black">
-          <h2 id="pageTitle" class="font-cinzel text-2xl font-bold text-white tracking-wide"></h2>
-          
-          <div class="relative pl-6 border-l-2 border-brand-gold/60 italic text-lg text-gray-200 leading-relaxed font-serif">
-            <p id="pageQuote"></p>
-          </div>
-
-          <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-xs text-gray-500">
-            <span id="pageAuthor">Registrado en la Bitácora</span>
-            <button onclick="deleteCurrentPage()" class="text-red-400/70 hover:text-red-400 flex items-center gap-1 transition">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              Eliminar página
-            </button>
-          </div>
-        </div>
-
-        <!-- Album Navigation Arrows -->
-        <div class="flex justify-between items-center p-4 bg-brand-dark border-t border-brand-border">
-          <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 rounded-lg bg-brand-card hover:bg-zinc-800 text-gray-300 text-xs flex items-center gap-2 border border-brand-border disabled:opacity-40 disabled:cursor-not-allowed transition">
-            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-            Anterior
-          </button>
-          <div class="flex space-x-1" id="pageDots">
-            <!-- Dots generated by JS -->
-          </div>
-          <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 rounded-lg bg-brand-card hover:bg-zinc-800 text-gray-300 text-xs flex items-center gap-2 border border-brand-border disabled:opacity-40 disabled:cursor-not-allowed transition">
-            Siguiente
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Modo Grilla (Grid Overview) -->
-    <section id="gridViewSection" class="hidden">
-      <div class="mb-6 flex justify-between items-center">
-        <h2 class="font-cinzel text-lg text-gray-200">Galería de Páginas</h2>
-        <span class="text-xs text-gray-400" id="gridCounter">Total: 0 momentos</span>
-      </div>
-      <div id="gridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Cards generated by JS -->
-      </div>
-    </section>
-
+    <!-- GRILLA DE ENTRADAS -->
+    <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Las entradas guardadas se renderizan automáticamente aquí -->
+    </div>
   </main>
 
-  <!-- Modal para Agregar Nueva Página -->
-  <div id="entryModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-lg rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+  <!-- MODAL PARA AÑADIR PÁGINA -->
+  <div id="entry-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+    <div class="glass-card rounded-2xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl my-8">
       
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-        <i data-lucide="x" class="w-5 h-5"></i>
+      <!-- BOTÓN CERRAR -->
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-2 rounded-lg hover:bg-white/5 transition">
+        ✕
       </button>
 
-      <h3 class="font-cinzel text-xl text-white font-bold mb-1 gold-gradient-text">Añadir Nueva Página</h3>
+      <h2 class="font-cinzel text-2xl font-bold gold-gradient-text mb-1">AÑADIR NUEVA PÁGINA</h2>
       <p class="text-xs text-gray-400 mb-6">Guarda un nuevo fragmento del diario con video o imagen.</p>
 
-      <form id="addPageForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+      <form id="entry-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
         
+        <!-- TÍTULO -->
         <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Título del Momento</label>
-          <input type="text" id="inputTitle" required placeholder="Ej: Un nuevo refugio, Un trabajo dudoso..." class="w-full bg-black/60 border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-gold">
+          <label class="block text-xs font-medium text-gray-300 mb-1">Título del Momento</label>
+          <input type="text" id="title-input" required placeholder="Ej: Lena, Bruna y Yone en la fiesta" class="w-full bg-black/50 border border-brand-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-gold transition">
         </div>
 
+        <!-- FRASE / TEXTO -->
         <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Frase / Fragmento de la Historia</label>
-          <textarea id="inputQuote" rows="3" required placeholder="Escribe la frase o pensamiento del día..." class="w-full bg-black/60 border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-gold"></textarea>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Frase / Fragmento de la Historia</label>
+          <textarea id="story-input" required rows="3" placeholder="Escribí una frase o resumen de lo que pasó en este momento..." class="w-full bg-black/50 border border-brand-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-gold transition resize-none custom-scrollbar"></textarea>
         </div>
 
+        <!-- TIPO DE RECURSO (PESTAÑAS) -->
         <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Tipo de Archivo Multimedia</label>
-          <div class="grid grid-cols-2 gap-2 mb-3">
-            <button type="button" onclick="setMediaType('file')" id="btnFileType" class="py-2 text-xs rounded-lg border border-brand-gold bg-brand-gold/10 text-brand-gold font-semibold flex items-center justify-center gap-2">
-              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-              Subir Archivo (Foto / Video)
+          <label class="block text-xs font-medium text-gray-300 mb-2">Tipo de Archivo Multimedia</label>
+          <div class="grid grid-cols-2 gap-2 bg-black/40 p-1 rounded-xl border border-brand-border">
+            <button type="button" id="tab-file" onclick="switchTab('file')" class="py-2 text-xs font-semibold rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold/30 transition">
+              📁 Archivo Local
             </button>
-            <button type="button" onclick="setMediaType('url')" id="btnUrlType" class="py-2 text-xs rounded-lg border border-brand-border bg-black/40 text-gray-400 font-semibold flex items-center justify-center gap-2">
-              <i data-lucide="link" class="w-3.5 h-3.5"></i>
-              Usar URL Externa
+            <button type="button" id="tab-url" onclick="switchTab('url')" class="py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition">
+              🔗 URL Externa
             </button>
           </div>
         </div>
 
-        <!-- Opción 1: Upload File -->
-        <div id="fileUploadContainer" class="space-y-2">
-          <label class="block text-xs font-semibold text-gray-300">Seleccionar Foto o Mini-Video</label>
-          <input type="file" id="inputFile" accept="image/*,video/*" onchange="handleFileSelect(event)" class="w-full bg-black/60 border border-brand-border rounded-lg p-2 text-xs text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-brand-gold file:text-black hover:file:bg-yellow-500">
-          <p class="text-[10px] text-gray-500">Soporta imágenes (JPG, PNG, GIF) y videos cortos (MP4, WebM).</p>
+        <!-- CAMPO: SUBIR ARCHIVO -->
+        <div id="file-container">
+          <label class="block text-xs font-medium text-gray-300 mb-1">Seleccionar Foto o Mini-Video</label>
+          <input type="file" id="file-input" accept="image/*,video/*" onchange="handleFileSelect(event)" class="w-full text-xs text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-border file:text-white hover:file:bg-brand-gold/20 hover:file:text-brand-gold file:transition cursor-pointer bg-black/30 rounded-xl border border-brand-border/50">
+          <p class="text-[11px] text-gray-500 mt-1">Imágenes (JPG, PNG, GIF) o videos hipercortos.</p>
         </div>
 
-        <!-- Opción 2: URL Input -->
-        <div id="urlInputContainer" class="space-y-2 hidden">
-          <label class="block text-xs font-semibold text-gray-300">URL del Recurso</label>
-          <input type="url" id="inputUrl" placeholder="https://ejemplo.com/video.mp4 o imagen.jpg" class="w-full bg-black/60 border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-gold">
+        <!-- CAMPO: URL EXTERNA -->
+        <div id="url-container" class="hidden">
+          <label class="block text-xs font-medium text-gray-300 mb-1">URL del Recurso (Streamable, Discord, Imgur)</label>
+          <input type="url" id="url-input" placeholder="https://streamable.com/... o https://i.imgur.com/..." class="w-full bg-black/50 border border-brand-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-gold transition">
         </div>
 
-        <!-- Preview Area -->
-        <div id="previewArea" class="hidden border border-brand-border rounded-lg p-2 bg-black/40 text-center">
-          <p class="text-[10px] text-gray-400 mb-2">Previsualización:</p>
-          <div id="previewContent" class="max-h-40 overflow-hidden flex items-center justify-center rounded"></div>
+        <!-- PREVISUALIZACIÓN -->
+        <div id="preview-box" class="hidden border border-brand-border/60 rounded-xl p-3 bg-black/30">
+          <p class="text-[10px] text-gray-400 text-center mb-2 font-semibold uppercase tracking-wider">Previsualización</p>
+          <div id="preview-media" class="max-h-48 rounded-lg overflow-hidden flex justify-center items-center bg-black"></div>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="w-full py-3 bg-brand-gold hover:bg-yellow-500 text-black font-bold rounded-lg text-sm transition mt-4 flex items-center justify-center gap-2">
-          <i data-lucide="bookmark" class="w-4 h-4"></i>
-          Guardar en el Álbum
+        <!-- BARRA DE PROGRESO DE CARGA -->
+        <div id="progress-container" class="hidden space-y-2">
+          <div class="flex justify-between text-xs text-gray-300 font-medium">
+            <span id="progress-status">Procesando archivo...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="w-full bg-black/60 rounded-full h-2.5 overflow-hidden border border-brand-border/40">
+            <div id="progress-bar" class="bg-gradient-to-r from-amber-500 to-brand-gold h-full w-0 transition-all duration-200"></div>
+          </div>
+          <p id="progress-warning" class="text-[11px] text-amber-400 hidden">⚠️ Archivo grande. Para clips grabados largos, usá la opción URL Externa (Streamable).</p>
+        </div>
+
+        <!-- BOTÓN GUARDAR -->
+        <button type="submit" id="submit-btn" class="w-full bg-brand-gold hover:bg-brand-goldHover text-black font-bold py-3.5 rounded-xl transition duration-200 shadow-lg shadow-brand-gold/10 flex justify-center items-center space-x-2">
+          <span>💾 Guardar en el Álbum</span>
         </button>
 
       </form>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="border-t border-brand-border py-6 bg-brand-dark/50 text-center text-xs text-gray-500">
-    <p>Diario de Rol Interactivo &bull; Bruna, Lena & Yone</p>
+  <!-- PIE DE PÁGINA -->
+  <footer class="border-t border-brand-border py-6 bg-brand-dark/50 mt-12 text-center text-xs text-gray-500">
+    Diario Creativo de Rol &copy; 2026 - Registrando los recuerdos de Bruna, Lena, Yone y Marico.
   </footer>
 
+  <!-- SCRIPT LÓGICA JAVASCRIPT -->
   <script>
-    // Initial Seed Data
-    const defaultPages = [
-      {
-        id: '1',
-        title: 'El Encuentro',
-        quote: 'Entre las calles de la ciudad, el camino de Yone se cruzó con el de Bruna y Lena. Un nuevo comienzo, una amistad improvisada y la búsqueda de un futuro por delante.',
-        mediaType: 'image',
-        mediaUrl: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1200&auto=format&fit=crop',
-        date: 'Página 1'
-      }
-    ];
+    let activeTab = 'file';
+    let selectedMediaData = null; // { type: 'image'|'video', url: string }
 
-    let pages = [];
-    let currentIndex = 0;
-    let isGridView = false;
-    let selectedMediaTypeInput = 'file'; // 'file' or 'url'
-    let currentUploadedMedia = null; // { type: 'image'|'video', data: base64 }
+    // Inicializar al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGallery();
+    });
 
-    // Load from LocalStorage or initialize
-    function loadPages() {
-      const saved = localStorage.getItem('roleplay_album_pages');
-      if (saved) {
-        try {
-          pages = JSON.parse(saved);
-        } catch (e) {
-          pages = defaultPages;
-        }
-      } else {
-        pages = defaultPages;
-        savePages();
-      }
-      render();
-    }
-
-    function savePages() {
-      localStorage.setItem('roleplay_album_pages', JSON.stringify(pages));
-    }
-
-    // Render App State
-    function render() {
-      lucide.createIcons();
-      if (pages.length === 0) {
-        renderEmptyState();
-        return;
-      }
-
-      if (currentIndex >= pages.length) currentIndex = pages.length - 1;
-      if (currentIndex < 0) currentIndex = 0;
-
-      const currentPage = pages[currentIndex];
-
-      // Update Single View Content
-      document.getElementById('pageCounter').textContent = `PÁGINA ${currentIndex + 1} DE ${pages.length}`;
-      document.getElementById('pageDate').textContent = currentPage.date || `Día ${currentIndex + 1}`;
-      document.getElementById('pageTitle').textContent = currentPage.title;
-      document.getElementById('pageQuote').textContent = `"${currentPage.quote}"`;
-
-      // Render Media
-      const mediaDisplay = document.getElementById('mediaDisplay');
-      const typeLabel = document.getElementById('mediaTypeLabel');
-      
-      if (currentPage.mediaType === 'video') {
-        typeLabel.textContent = 'Mini-Video';
-        mediaDisplay.innerHTML = `
-          <video src="${currentPage.mediaUrl}" autoplay loop muted playsinline class="w-full h-full object-cover max-h-[500px]">
-            Tu navegador no soporta reproducción de video.
-          </video>
-        `;
-      } else {
-        typeLabel.textContent = 'Fotografía';
-        mediaDisplay.innerHTML = `
-          <img src="${currentPage.mediaUrl}" alt="${currentPage.title}" class="w-full h-full object-cover max-h-[500px]">
-        `;
-      }
-
-      // Update Pagination Buttons
-      document.getElementById('prevBtn').disabled = currentIndex === 0;
-      document.getElementById('nextBtn').disabled = currentIndex === pages.length - 1;
-
-      // Update Pagination Dots
-      const dotsContainer = document.getElementById('pageDots');
-      dotsContainer.innerHTML = pages.map((_, i) => `
-        <button onclick="goToPage(${i})" class="w-2 h-2 rounded-full transition ${i === currentIndex ? 'bg-brand-gold w-4' : 'bg-gray-600 hover:bg-gray-400'}"></button>
-      `).join('');
-
-      // Update Grid View
-      renderGrid();
-    }
-
-    function renderEmptyState() {
-      document.getElementById('singleViewSection').innerHTML = `
-        <div class="glass-card p-12 text-center rounded-2xl max-w-md mx-auto my-12 space-y-4">
-          <i data-lucide="book-open" class="w-12 h-12 text-brand-gold mx-auto opacity-50"></i>
-          <h3 class="font-cinzel text-xl text-white font-bold">Tu diario está vacío</h3>
-          <p class="text-xs text-gray-400">Haz clic en "Nueva Página" para agregar el primer recuerdo de tu personaje.</p>
-          <button onclick="openModal()" class="px-4 py-2 bg-brand-gold text-black rounded-lg text-xs font-bold inline-flex items-center gap-2">
-            <i data-lucide="plus" class="w-4 h-4"></i> Crear primera página
-          </button>
-        </div>
-      `;
-    }
-
-    function renderGrid() {
-      const gridContainer = document.getElementById('gridContainer');
-      document.getElementById('gridCounter').textContent = `Total: ${pages.length} recuerdos`;
-
-      gridContainer.innerHTML = pages.map((page, index) => `
-        <div onclick="selectPageFromGrid(${index})" class="glass-card rounded-xl overflow-hidden cursor-pointer hover:border-brand-gold/50 transition group flex flex-col justify-between">
-          <div class="relative h-48 bg-black overflow-hidden">
-            ${page.mediaType === 'video' 
-              ? `<video src="${page.mediaUrl}" muted loop playsinline class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></video>`
-              : `<img src="${page.mediaUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`
-            }
-            <div class="absolute top-2 right-2 bg-black/60 px-2 py-0.5 rounded text-[10px] text-gray-300">
-              ${page.mediaType === 'video' ? 'Video' : 'Foto'}
-            </div>
-          </div>
-          <div class="p-4 space-y-2 flex-1 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-cinzel text-brand-gold">PÁGINA ${index + 1}</span>
-              <h4 class="font-cinzel font-bold text-white text-sm line-clamp-1">${page.title}</h4>
-              <p class="text-xs text-gray-400 line-clamp-2 italic mt-1">"${page.quote}"</p>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Navigation
-    function prevPage() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        render();
-      }
-    }
-
-    function nextPage() {
-      if (currentIndex < pages.length - 1) {
-        currentIndex++;
-        render();
-      }
-    }
-
-    function goToPage(index) {
-      currentIndex = index;
-      render();
-    }
-
-    function selectPageFromGrid(index) {
-      currentIndex = index;
-      toggleView(); // Return to single page view
-    }
-
-    function toggleView() {
-      isGridView = !isGridView;
-      const singleSec = document.getElementById('singleViewSection');
-      const gridSec = document.getElementById('gridViewSection');
-      const viewText = document.getElementById('viewText');
-      const viewIcon = document.getElementById('viewIcon');
-
-      if (isGridView) {
-        singleSec.classList.add('hidden');
-        gridSec.classList.remove('hidden');
-        viewText.textContent = 'Ver Lector';
-        viewIcon.setAttribute('data-lucide', 'book-open');
-      } else {
-        singleSec.classList.remove('hidden');
-        gridSec.classList.add('hidden');
-        viewText.textContent = 'Ver Grilla';
-        viewIcon.setAttribute('data-lucide', 'layout-grid');
-      }
-      lucide.createIcons();
-    }
-
-    // Delete current page
-    function deleteCurrentPage() {
-      if (confirm('¿Seguro que quieres borrar esta página del diario?')) {
-        pages.splice(currentIndex, 1);
-        if (currentIndex >= pages.length) currentIndex = Math.max(0, pages.length - 1);
-        savePages();
-        loadPages();
-      }
-    }
-
-    // Modal Control
     function openModal() {
-      document.getElementById('entryModal').classList.remove('hidden');
+      document.getElementById('entry-modal').classList.remove('hidden');
+      resetForm();
     }
 
     function closeModal() {
-      document.getElementById('entryModal').classList.add('hidden');
-      document.getElementById('addPageForm').reset();
-      document.getElementById('previewArea').classList.add('hidden');
-      currentUploadedMedia = null;
+      document.getElementById('entry-modal').classList.add('hidden');
+      resetForm();
     }
 
-    function setMediaType(type) {
-      selectedMediaTypeInput = type;
-      const btnFile = document.getElementById('btnFileType');
-      const btnUrl = document.getElementById('btnUrlType');
-      const fileContainer = document.getElementById('fileUploadContainer');
-      const urlContainer = document.getElementById('urlInputContainer');
+    function switchTab(tab) {
+      activeTab = tab;
+      const fileBtn = document.getElementById('tab-file');
+      const urlBtn = document.getElementById('tab-url');
+      const fileContainer = document.getElementById('file-container');
+      const urlContainer = document.getElementById('url-container');
 
-      if (type === 'file') {
-        btnFile.className = "py-2 text-xs rounded-lg border border-brand-gold bg-brand-gold/10 text-brand-gold font-semibold flex items-center justify-center gap-2";
-        btnUrl.className = "py-2 text-xs rounded-lg border border-brand-border bg-black/40 text-gray-400 font-semibold flex items-center justify-center gap-2";
+      if (tab === 'file') {
+        fileBtn.className = "py-2 text-xs font-semibold rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold/30 transition";
+        urlBtn.className = "py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition";
         fileContainer.classList.remove('hidden');
         urlContainer.classList.add('hidden');
       } else {
-        btnUrl.className = "py-2 text-xs rounded-lg border border-brand-gold bg-brand-gold/10 text-brand-gold font-semibold flex items-center justify-center gap-2";
-        btnFile.className = "py-2 text-xs rounded-lg border border-brand-border bg-black/40 text-gray-400 font-semibold flex items-center justify-center gap-2";
+        urlBtn.className = "py-2 text-xs font-semibold rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold/30 transition";
+        fileBtn.className = "py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition";
         urlContainer.classList.remove('hidden');
         fileContainer.classList.add('hidden');
       }
+      hidePreview();
     }
 
-    // File selection handler (Base64)
+    // Manejar selección de archivo local con barra de carga
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
 
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progressPercent = document.getElementById('progress-percent');
+      const progressStatus = document.getElementById('progress-status');
+      const progressWarning = document.getElementById('progress-warning');
+      const submitBtn = document.getElementById('submit-btn');
+
+      progressContainer.classList.remove('hidden');
+      progressWarning.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.5';
+
+      if (file.size > 5 * 1024 * 1024) {
+        progressWarning.classList.remove('hidden');
+      }
+
       const reader = new FileReader();
-      const isVideo = file.type.startsWith('video/');
+
+      reader.onprogress = function(e) {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          progressBar.style.width = percent + '%';
+          progressPercent.innerText = percent + '%';
+          progressStatus.innerText = 'Cargando recurso...';
+        }
+      };
 
       reader.onload = function(e) {
-        currentUploadedMedia = {
+        progressBar.style.width = '100%';
+        progressPercent.innerText = '100%';
+        progressStatus.innerText = 'Completado';
+
+        const isVideo = file.type.startsWith('video/');
+        selectedMediaData = {
           type: isVideo ? 'video' : 'image',
-          data: e.target.result
+          url: e.target.result
         };
 
-        const previewArea = document.getElementById('previewArea');
-        const previewContent = document.getElementById('previewContent');
-        previewArea.classList.remove('hidden');
+        showPreview(selectedMediaData.type, selectedMediaData.url);
+        
+        setTimeout(() => {
+          progressContainer.classList.add('hidden');
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+        }, 500);
+      };
 
-        if (isVideo) {
-          previewContent.innerHTML = `<video src="${e.target.result}" autoplay loop muted class="h-32 rounded object-cover"></video>`;
-        } else {
-          previewContent.innerHTML = `<img src="${e.target.result}" class="h-32 rounded object-cover">`;
-        }
+      reader.onerror = function() {
+        alert("Hubo un error al leer el archivo.");
+        progressContainer.classList.add('hidden');
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
       };
 
       reader.readAsDataURL(file);
     }
 
-    // Handle Form Submit
+    function showPreview(type, url) {
+      const previewBox = document.getElementById('preview-box');
+      const previewMedia = document.getElementById('preview-media');
+      previewBox.classList.remove('hidden');
+
+      if (type === 'video') {
+        previewMedia.innerHTML = `<video src="${url}" controls class="max-h-44 rounded object-contain"></video>`;
+      } else {
+        previewMedia.innerHTML = `<img src="${url}" class="max-h-44 rounded object-contain" alt="Vista previa">`;
+      }
+    }
+
+    function hidePreview() {
+      document.getElementById('preview-box').classList.add('hidden');
+      document.getElementById('preview-media').innerHTML = '';
+      selectedMediaData = null;
+    }
+
     function handleFormSubmit(event) {
       event.preventDefault();
 
-      const title = document.getElementById('inputTitle').value.trim();
-      const quote = document.getElementById('inputQuote').value.trim();
-      let mediaType = 'image';
-      let mediaUrl = '';
+      const title = document.getElementById('title-input').value.trim();
+      const story = document.getElementById('story-input').value.trim();
+      let media = selectedMediaData;
 
-      if (selectedMediaTypeInput === 'file') {
-        if (!currentUploadedMedia) {
-          alert('Por favor selecciona una foto o video.');
+      if (activeTab === 'url') {
+        let rawUrl = document.getElementById('url-input').value.trim();
+        if (!rawUrl) {
+          alert('Por favor ingresá una URL válida.');
           return;
         }
-        mediaType = currentUploadedMedia.type;
-        mediaUrl = currentUploadedMedia.data;
-      } else {
-        const urlInput = document.getElementById('inputUrl').value.trim();
-        if (!urlInput) {
-          alert('Por favor ingresa una URL válida.');
-          return;
+
+        // Convertir enlaces de Postimages al directo si aplica
+        if (rawUrl.includes('postimg.cc/') && !rawUrl.includes('i.postimg.cc')) {
+          const code = rawUrl.split('/').pop();
+          rawUrl = `https://i.postimg.cc/${code}/image.jpg`;
         }
-        // Detect if URL looks like video
-        const isVideoUrl = urlInput.match(/\.(mp4|webm|ogg)$/i);
-        mediaType = isVideoUrl ? 'video' : 'image';
-        mediaUrl = urlInput;
+
+        const isVideoUrl = rawUrl.includes('streamable.com') || rawUrl.endsWith('.mp4') || rawUrl.endsWith('.webm');
+        media = {
+          type: isVideoUrl ? 'video' : 'image',
+          url: rawUrl
+        };
       }
 
-      const newPage = {
-        id: Date.now().toString(),
+      if (!media || !media.url) {
+        alert('Por favor seleccioná un archivo o pegá un enlace válido.');
+        return;
+      }
+
+      const newEntry = {
+        id: Date.now(),
         title: title,
-        quote: quote,
-        mediaType: mediaType,
-        mediaUrl: mediaUrl,
-        date: `Página ${pages.length + 1}`
+        story: story,
+        media: media,
+        date: new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'short', day: 'numeric' })
       };
 
-      pages.push(newPage);
-      savePages();
-      currentIndex = pages.length - 1;
-      
-      closeModal();
-      loadPages();
+      try {
+        const entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
+        entries.unshift(newEntry);
+        localStorage.setItem('rp_journal_entries', JSON.stringify(entries));
+
+        showToast('¡Página guardada con éxito en tu diario!');
+        closeModal();
+        renderGallery();
+      } catch (err) {
+        alert('No se pudo guardar la página porque el archivo de video o imagen supera el límite de memoria del navegador (5 MB).\n\nTe recomendamos usar la pestaña "URL Externa" pegando un enlace de Streamable o Discord.');
+      }
     }
 
-    // Keyboard Navigation
-    document.addEventListener('keydown', (e) => {
-      if (document.getElementById('entryModal').classList.contains('hidden')) {
-        if (e.key === 'ArrowLeft') prevPage();
-        if (e.key === 'ArrowRight') nextPage();
-      }
-    });
+    function renderGallery() {
+      const grid = document.getElementById('gallery-grid');
+      const emptyState = document.getElementById('empty-state');
+      const entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
 
-    // Initialize
-    loadPages();
+      if (entries.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = entries.map(item => `
+        <article class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between hover:border-brand-gold/40 transition duration-300">
+          <div class="relative bg-black aspect-video flex items-center justify-center overflow-hidden">
+            ${item.media.type === 'video' 
+              ? `<video src="${item.media.url}" controls class="w-full h-full object-cover"></video>`
+              : `<img src="${item.media.url}" alt="${item.title}" class="w-full h-full object-cover">`
+            }
+            <span class="absolute top-3 right-3 bg-black/70 text-gray-300 text-[10px] px-2.5 py-1 rounded-full border border-white/10 backdrop-blur-md">
+              ${item.date}
+            </span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="font-cinzel text-lg font-bold text-brand-gold mb-2">${escapeHtml(item.title)}</h3>
+              <p class="text-sm text-gray-300 leading-relaxed italic">"${escapeHtml(item.story)}"</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-brand-border/50 flex justify-end">
+              <button onclick="deleteEntry(${item.id})" class="text-xs text-red-400 hover:text-red-300 transition flex items-center space-x-1">
+                <span>Eliminar</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function deleteEntry(id) {
+      if (!confirm('¿Estás segura de borrar esta página del diario?')) return;
+      let entries = JSON.parse(localStorage.getItem('rp_journal_entries') || '[]');
+      entries = entries.filter(e => e.id !== id);
+      localStorage.setItem('rp_journal_entries', JSON.stringify(entries));
+      renderGallery();
+      showToast('Página eliminada');
+    }
+
+    function resetForm() {
+      document.getElementById('entry-form').reset();
+      document.getElementById('progress-container').classList.add('hidden');
+      document.getElementById('progress-bar').style.width = '0%';
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('submit-btn').style.opacity = '1';
+      switchTab('file');
+      hidePreview();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
   </script>
 </body>
 </html>
