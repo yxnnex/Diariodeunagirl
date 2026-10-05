@@ -121,7 +121,11 @@
       </label>
 
       <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
-        🗑 Borrar Selección
+        🗑️ Borrar Selección
+      </button>
+
+      <button onclick="clearAllData()" class="bg-red-950 hover:bg-red-900 text-red-200 px-3 py-1.5 rounded-lg border border-red-800 transition">
+        ⚠️ Reiniciar Álbum
       </button>
     </div>
   </header>
@@ -228,6 +232,7 @@
   </div>
 
   <script>
+    const STORAGE_KEY = 'scrapbook_album_data';
     let currentSpread = 0;
     let spreads = [
       { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [] }
@@ -237,9 +242,35 @@
     let currentEditTarget = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
+      loadSavedData();
       renderSpread();
     });
+
+    // Guardar en el almacenamiento local del navegador
+    function saveToLocalStorage() {
+      saveCurrentSpreadState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        currentSpread: currentSpread,
+        spreads: spreads
+      }));
+    }
+
+    // Cargar datos guardados previamente
+    function loadSavedData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          spreads = parsed.spreads || spreads;
+          currentSpread = parsed.currentSpread || 0;
+        } catch (e) {
+          console.error("Error al cargar datos guardados:", e);
+        }
+      } else {
+        // Cargar elemento por defecto la primera vez que se abre la app
+        createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
+      }
+    }
 
     function saveCurrentSpreadState() {
       const leftPage = document.getElementById('page-left');
@@ -271,22 +302,24 @@
     }
 
     function nextPage() {
-      saveCurrentSpreadState();
+      saveToLocalStorage();
       triggerAnimation(() => {
         currentSpread++;
         if (!spreads[currentSpread]) {
           spreads.push({ leftBg: 'bg-kraft', rightBg: 'bg-crumpled', leftContent: [], rightContent: [] });
         }
         renderSpread();
+        saveToLocalStorage();
       });
     }
 
     function prevPage() {
       if (currentSpread === 0) return;
-      saveCurrentSpreadState();
+      saveToLocalStorage();
       triggerAnimation(() => {
         currentSpread--;
         renderSpread();
+        saveToLocalStorage();
       });
     }
 
@@ -306,13 +339,17 @@
         spreads[currentSpread].rightBg = bgClass;
       }
       renderSpread();
+      saveToLocalStorage();
     }
 
     function uploadPhoto(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) { createPolaroid(e.target.result, 'left'); };
+      reader.onload = function(e) { 
+        createPolaroid(e.target.result, 'left');
+        saveToLocalStorage();
+      };
       reader.readAsDataURL(file);
     }
 
@@ -328,7 +365,7 @@
         <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200 pointer-events-none">
           <img src="${imgSrc}" class="w-full h-full object-cover">
         </div>
-        <p class="handwriting text-center text-xl text-stone-800 leading-none py-1" contenteditable="true">Mi Recuerdo</p>
+        <p class="handwriting text-center text-xl text-stone-800 leading-none py-1" contenteditable="true" oninput="saveToLocalStorage()">Mi Recuerdo</p>
       `;
 
       makeDraggable(item);
@@ -339,7 +376,10 @@
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) { createSticker(e.target.result, 'right'); };
+      reader.onload = function(e) { 
+        createSticker(e.target.result, 'right');
+        saveToLocalStorage();
+      };
       reader.readAsDataURL(file);
     }
 
@@ -399,6 +439,7 @@
       }
 
       closeTextModal();
+      saveToLocalStorage();
     }
 
     function makeDraggable(element) {
@@ -433,6 +474,7 @@
       function closeDragElement() {
         document.onpointermove = null;
         document.onpointerup = null;
+        saveToLocalStorage();
       }
     }
 
@@ -448,6 +490,14 @@
       if (activeElement) {
         activeElement.remove();
         activeElement = null;
+        saveToLocalStorage();
+      }
+    }
+
+    function clearAllData() {
+      if (confirm("¿Estás segura de que querés borrar todo el cuaderno y empezar de cero?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
       }
     }
   </script>
