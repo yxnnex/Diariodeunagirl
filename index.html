@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitácora de Rol - Álbum de Historias</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              gold: '#D4AF37',
+              dark: '#0e0e11',
+              card: '#18181c',
+              border: '#2a2a32',
+              accent: '#e5a93c'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0c0c0f;
+      color: #e2e8f0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass-card {
+      background: rgba(24, 24, 28, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #121215;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #2d2d38;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #d4af37;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar">
+
+  <!-- Header -->
+  <header class="border-b border-brand-border bg-brand-dark/90 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold">
+          <i data-lucide="book-open"></i>
+        </div>
+        <div>
+          <h1 class="font-cinzel text-xl font-bold tracking-wide gold-gradient-text">ÁLBUM DE ROL</h1>
+          <p class="text-xs text-gray-400">Diario de ruta: Bruna, Lena & Yone</p>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center space-x-3">
+        <button id="viewToggleBtn" onclick="toggleView()" class="px-3 py-2 rounded-lg bg-brand-card hover:bg-zinc-800 border border-brand-border text-xs text-gray-300 flex items-center gap-2 transition">
+          <i data-lucide="layout-grid" class="w-4 h-4" id="viewIcon"></i>
+          <span id="viewText">Ver Grilla</span>
+        </button>
+
+        <button onclick="openModal()" class="px-4 py-2 rounded-lg bg-brand-gold hover:bg-yellow-500 text-black font-semibold text-xs flex items-center gap-2 transition shadow-lg shadow-brand-gold/20">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Nueva Página</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- Modo Libro / Lector (Single Page View) -->
+    <section id="singleViewSection" class="max-w-4xl mx-auto">
+      <div class="glass-card rounded-2xl overflow-hidden shadow-2xl relative">
+        
+        <!-- Top bar inside card -->
+        <div class="px-6 py-4 border-b border-brand-border flex justify-between items-center text-xs text-gray-400">
+          <span id="pageCounter" class="font-cinzel text-brand-gold">PÁGINA 1 DE 1</span>
+          <span id="pageDate" class="italic">Capítulo Inicial</span>
+        </div>
+
+        <!-- Media Container (Video or Photo) -->
+        <div class="relative w-full bg-black min-h-[350px] max-h-[520px] flex items-center justify-center overflow-hidden group">
+          <div id="mediaDisplay" class="w-full h-full flex items-center justify-center">
+            <!-- Dynamic Content injected by JS -->
+          </div>
+          
+          <!-- Quick media type indicator -->
+          <div id="mediaTypeBadge" class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[10px] text-gray-300 flex items-center gap-1.5">
+            <i data-lucide="image" class="w-3 h-3"></i>
+            <span id="mediaTypeLabel">Imagen</span>
+          </div>
+        </div>
+
+        <!-- Narrative Content -->
+        <div class="p-8 space-y-4 bg-gradient-to-b from-brand-card to-black">
+          <h2 id="pageTitle" class="font-cinzel text-2xl font-bold text-white tracking-wide"></h2>
+          
+          <div class="relative pl-6 border-l-2 border-brand-gold/60 italic text-lg text-gray-200 leading-relaxed font-serif">
+            <p id="pageQuote"></p>
+          </div>
+
+          <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-xs text-gray-500">
+            <span id="pageAuthor">Registrado en la Bitácora</span>
+            <button onclick="deleteCurrentPage()" class="text-red-400/70 hover:text-red-400 flex items-center gap-1 transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              Eliminar página
+            </button>
+          </div>
+        </div>
+
+        <!-- Album Navigation Arrows -->
+        <div class="flex justify-between items-center p-4 bg-brand-dark border-t border-brand-border">
+          <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 rounded-lg bg-brand-card hover:bg-zinc-800 text-gray-300 text-xs flex items-center gap-2 border border-brand-border disabled:opacity-40 disabled:cursor-not-allowed transition">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            Anterior
+          </button>
+          <div class="flex space-x-1" id="pageDots">
+            <!-- Dots generated by JS -->
+          </div>
+          <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 rounded-lg bg-brand-card hover:bg-zinc-800 text-gray-300 text-xs flex items-center gap-2 border border-brand-border disabled:opacity-40 disabled:cursor-not-allowed transition">
+            Siguiente
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Modo Grilla (Grid Overview) -->
+    <section id="gridViewSection" class="hidden">
+      <div class="mb-6 flex justify-between items-center">
+        <h2 class="font-cinzel text-lg text-gray-200">Galería de Páginas</h2>
+        <span class="text-xs text-gray-400" id="gridCounter">Total: 0 momentos</span>
+      </div>
+      <div id="gridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards generated by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal para Agregar Nueva Página -->
+  <div id="entryModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-lg rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+      
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <h3 class="font-cinzel text-xl text-white font-bold mb-1 gold-gradient-text">Añadir Nueva Página</h3>
+      <p class="text-xs text-gray-400 mb-6">Guarda un nuevo fragmento del diario con video o imagen.</p>
+
+      <form id="addPageForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+        
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Título del Momento</label>
+          <input type="text" id="inputTitle" required placeholder="Ej: Un nuevo refugio, Un trabajo dudoso..." class="w-full bg-black/60 border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-gold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Frase / Fragmento de la Historia</label>
+          <textarea id="inputQuote" rows="3" required placeholder="Escribe la frase o pensamiento del día..." class="w-full bg-black/60 border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-gold"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Tipo de Archivo Multimedia</label>
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <button type="button" onclick="setMediaType('file')" id="btnFileType" class="py-2 text-xs rounded-lg border border-brand-gold bg-brand-gold/10 text-brand-gold font-semibold flex items-center justify-center gap-2">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              Subir Archivo (Foto / Video)
+            </button>
+            <button type="button" onclick="setMediaType('url')" id="btnUrlType" class="py-2 text-xs rounded-lg border border-brand-border bg-black/40 text-gray-400 font-semibold flex items-center justify-center gap-2">
+              <i data-lucide="link" class="w-3.5 h-3.5"></i>
+              Usar URL Externa
+            </button>
+          </div>
+        </div>
+
+        <!-- Opción 1: Upload File -->
+        <div id="fileUploadContainer" class="space-y-2">
+          <label class="block text-xs font-semibold text-gray-300">Seleccionar Foto o Mini-Video</label>
+          <input type="file" id="inputFile" accept="image/*,video/*" onchange="handleFileSelect(event)" class="w-full bg-black/60 border border-brand-border rounded-lg p-2 text-xs text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-brand-gold file:text-black hover:file:bg-yellow-500">
+          <p class="text-[10px] text-gray-500">Soporta imágenes (JPG, PNG, GIF) y videos cortos (MP4, WebM).</p>
+        </div>
+
+        <!-- Opción 2: URL Input -->
+        <div id="urlInputContainer" class="space-y-2 hidden">
+          <label class="block text-xs font-semibold text-gray-300">URL del Recurso</label>
+          <input type="url" id="inputUrl" placeholder="https://ejemplo.com/video.mp4 o imagen.jpg" class="w-full bg-black/60 border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-gold">
+        </div>
+
+        <!-- Preview Area -->
+        <div id="previewArea" class="hidden border border-brand-border rounded-lg p-2 bg-black/40 text-center">
+          <p class="text-[10px] text-gray-400 mb-2">Previsualización:</p>
+          <div id="previewContent" class="max-h-40 overflow-hidden flex items-center justify-center rounded"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-3 bg-brand-gold hover:bg-yellow-500 text-black font-bold rounded-lg text-sm transition mt-4 flex items-center justify-center gap-2">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          Guardar en el Álbum
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-border py-6 bg-brand-dark/50 text-center text-xs text-gray-500">
+    <p>Diario de Rol Interactivo &bull; Bruna, Lena & Yone</p>
+  </footer>
+
+  <script>
+    // Initial Seed Data
+    const defaultPages = [
+      {
+        id: '1',
+        title: 'El Encuentro',
+        quote: 'Entre las calles de la ciudad, el camino de Yone se cruzó con el de Bruna y Lena. Un nuevo comienzo, una amistad improvisada y la búsqueda de un futuro por delante.',
+        mediaType: 'image',
+        mediaUrl: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1200&auto=format&fit=crop',
+        date: 'Página 1'
+      }
+    ];
+
+    let pages = [];
+    let currentIndex = 0;
+    let isGridView = false;
+    let selectedMediaTypeInput = 'file'; // 'file' or 'url'
+    let currentUploadedMedia = null; // { type: 'image'|'video', data: base64 }
+
+    // Load from LocalStorage or initialize
+    function loadPages() {
+      const saved = localStorage.getItem('roleplay_album_pages');
+      if (saved) {
+        try {
+          pages = JSON.parse(saved);
+        } catch (e) {
+          pages = defaultPages;
+        }
+      } else {
+        pages = defaultPages;
+        savePages();
+      }
+      render();
+    }
+
+    function savePages() {
+      localStorage.setItem('roleplay_album_pages', JSON.stringify(pages));
+    }
+
+    // Render App State
+    function render() {
+      lucide.createIcons();
+      if (pages.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      if (currentIndex >= pages.length) currentIndex = pages.length - 1;
+      if (currentIndex < 0) currentIndex = 0;
+
+      const currentPage = pages[currentIndex];
+
+      // Update Single View Content
+      document.getElementById('pageCounter').textContent = `PÁGINA ${currentIndex + 1} DE ${pages.length}`;
+      document.getElementById('pageDate').textContent = currentPage.date || `Día ${currentIndex + 1}`;
+      document.getElementById('pageTitle').textContent = currentPage.title;
+      document.getElementById('pageQuote').textContent = `"${currentPage.quote}"`;
+
+      // Render Media
+      const mediaDisplay = document.getElementById('mediaDisplay');
+      const typeLabel = document.getElementById('mediaTypeLabel');
+      
+      if (currentPage.mediaType === 'video') {
+        typeLabel.textContent = 'Mini-Video';
+        mediaDisplay.innerHTML = `
+          <video src="${currentPage.mediaUrl}" autoplay loop muted playsinline class="w-full h-full object-cover max-h-[500px]">
+            Tu navegador no soporta reproducción de video.
+          </video>
+        `;
+      } else {
+        typeLabel.textContent = 'Fotografía';
+        mediaDisplay.innerHTML = `
+          <img src="${currentPage.mediaUrl}" alt="${currentPage.title}" class="w-full h-full object-cover max-h-[500px]">
+        `;
+      }
+
+      // Update Pagination Buttons
+      document.getElementById('prevBtn').disabled = currentIndex === 0;
+      document.getElementById('nextBtn').disabled = currentIndex === pages.length - 1;
+
+      // Update Pagination Dots
+      const dotsContainer = document.getElementById('pageDots');
+      dotsContainer.innerHTML = pages.map((_, i) => `
+        <button onclick="goToPage(${i})" class="w-2 h-2 rounded-full transition ${i === currentIndex ? 'bg-brand-gold w-4' : 'bg-gray-600 hover:bg-gray-400'}"></button>
+      `).join('');
+
+      // Update Grid View
+      renderGrid();
+    }
+
+    function renderEmptyState() {
+      document.getElementById('singleViewSection').innerHTML = `
+        <div class="glass-card p-12 text-center rounded-2xl max-w-md mx-auto my-12 space-y-4">
+          <i data-lucide="book-open" class="w-12 h-12 text-brand-gold mx-auto opacity-50"></i>
+          <h3 class="font-cinzel text-xl text-white font-bold">Tu diario está vacío</h3>
+          <p class="text-xs text-gray-400">Haz clic en "Nueva Página" para agregar el primer recuerdo de tu personaje.</p>
+          <button onclick="openModal()" class="px-4 py-2 bg-brand-gold text-black rounded-lg text-xs font-bold inline-flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Crear primera página
+          </button>
+        </div>
+      `;
+    }
+
+    function renderGrid() {
+      const gridContainer = document.getElementById('gridContainer');
+      document.getElementById('gridCounter').textContent = `Total: ${pages.length} recuerdos`;
+
+      gridContainer.innerHTML = pages.map((page, index) => `
+        <div onclick="selectPageFromGrid(${index})" class="glass-card rounded-xl overflow-hidden cursor-pointer hover:border-brand-gold/50 transition group flex flex-col justify-between">
+          <div class="relative h-48 bg-black overflow-hidden">
+            ${page.mediaType === 'video' 
+              ? `<video src="${page.mediaUrl}" muted loop playsinline class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></video>`
+              : `<img src="${page.mediaUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`
+            }
+            <div class="absolute top-2 right-2 bg-black/60 px-2 py-0.5 rounded text-[10px] text-gray-300">
+              ${page.mediaType === 'video' ? 'Video' : 'Foto'}
+            </div>
+          </div>
+          <div class="p-4 space-y-2 flex-1 flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] font-cinzel text-brand-gold">PÁGINA ${index + 1}</span>
+              <h4 class="font-cinzel font-bold text-white text-sm line-clamp-1">${page.title}</h4>
+              <p class="text-xs text-gray-400 line-clamp-2 italic mt-1">"${page.quote}"</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Navigation
+    function prevPage() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        render();
+      }
+    }
+
+    function nextPage() {
+      if (currentIndex < pages.length - 1) {
+        currentIndex++;
+        render();
+      }
+    }
+
+    function goToPage(index) {
+      currentIndex = index;
+      render();
+    }
+
+    function selectPageFromGrid(index) {
+      currentIndex = index;
+      toggleView(); // Return to single page view
+    }
+
+    function toggleView() {
+      isGridView = !isGridView;
+      const singleSec = document.getElementById('singleViewSection');
+      const gridSec = document.getElementById('gridViewSection');
+      const viewText = document.getElementById('viewText');
+      const viewIcon = document.getElementById('viewIcon');
+
+      if (isGridView) {
+        singleSec.classList.add('hidden');
+        gridSec.classList.remove('hidden');
+        viewText.textContent = 'Ver Lector';
+        viewIcon.setAttribute('data-lucide', 'book-open');
+      } else {
+        singleSec.classList.remove('hidden');
+        gridSec.classList.add('hidden');
+        viewText.textContent = 'Ver Grilla';
+        viewIcon.setAttribute('data-lucide', 'layout-grid');
+      }
+      lucide.createIcons();
+    }
+
+    // Delete current page
+    function deleteCurrentPage() {
+      if (confirm('¿Seguro que quieres borrar esta página del diario?')) {
+        pages.splice(currentIndex, 1);
+        if (currentIndex >= pages.length) currentIndex = Math.max(0, pages.length - 1);
+        savePages();
+        loadPages();
+      }
+    }
+
+    // Modal Control
+    function openModal() {
+      document.getElementById('entryModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('entryModal').classList.add('hidden');
+      document.getElementById('addPageForm').reset();
+      document.getElementById('previewArea').classList.add('hidden');
+      currentUploadedMedia = null;
+    }
+
+    function setMediaType(type) {
+      selectedMediaTypeInput = type;
+      const btnFile = document.getElementById('btnFileType');
+      const btnUrl = document.getElementById('btnUrlType');
+      const fileContainer = document.getElementById('fileUploadContainer');
+      const urlContainer = document.getElementById('urlInputContainer');
+
+      if (type === 'file') {
+        btnFile.className = "py-2 text-xs rounded-lg border border-brand-gold bg-brand-gold/10 text-brand-gold font-semibold flex items-center justify-center gap-2";
+        btnUrl.className = "py-2 text-xs rounded-lg border border-brand-border bg-black/40 text-gray-400 font-semibold flex items-center justify-center gap-2";
+        fileContainer.classList.remove('hidden');
+        urlContainer.classList.add('hidden');
+      } else {
+        btnUrl.className = "py-2 text-xs rounded-lg border border-brand-gold bg-brand-gold/10 text-brand-gold font-semibold flex items-center justify-center gap-2";
+        btnFile.className = "py-2 text-xs rounded-lg border border-brand-border bg-black/40 text-gray-400 font-semibold flex items-center justify-center gap-2";
+        urlContainer.classList.remove('hidden');
+        fileContainer.classList.add('hidden');
+      }
+    }
+
+    // File selection handler (Base64)
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      const isVideo = file.type.startsWith('video/');
+
+      reader.onload = function(e) {
+        currentUploadedMedia = {
+          type: isVideo ? 'video' : 'image',
+          data: e.target.result
+        };
+
+        const previewArea = document.getElementById('previewArea');
+        const previewContent = document.getElementById('previewContent');
+        previewArea.classList.remove('hidden');
+
+        if (isVideo) {
+          previewContent.innerHTML = `<video src="${e.target.result}" autoplay loop muted class="h-32 rounded object-cover"></video>`;
+        } else {
+          previewContent.innerHTML = `<img src="${e.target.result}" class="h-32 rounded object-cover">`;
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // Handle Form Submit
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('inputTitle').value.trim();
+      const quote = document.getElementById('inputQuote').value.trim();
+      let mediaType = 'image';
+      let mediaUrl = '';
+
+      if (selectedMediaTypeInput === 'file') {
+        if (!currentUploadedMedia) {
+          alert('Por favor selecciona una foto o video.');
+          return;
+        }
+        mediaType = currentUploadedMedia.type;
+        mediaUrl = currentUploadedMedia.data;
+      } else {
+        const urlInput = document.getElementById('inputUrl').value.trim();
+        if (!urlInput) {
+          alert('Por favor ingresa una URL válida.');
+          return;
+        }
+        // Detect if URL looks like video
+        const isVideoUrl = urlInput.match(/\.(mp4|webm|ogg)$/i);
+        mediaType = isVideoUrl ? 'video' : 'image';
+        mediaUrl = urlInput;
+      }
+
+      const newPage = {
+        id: Date.now().toString(),
+        title: title,
+        quote: quote,
+        mediaType: mediaType,
+        mediaUrl: mediaUrl,
+        date: `Página ${pages.length + 1}`
+      };
+
+      pages.push(newPage);
+      savePages();
+      currentIndex = pages.length - 1;
+      
+      closeModal();
+      loadPages();
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('entryModal').classList.contains('hidden')) {
+        if (e.key === 'ArrowLeft') prevPage();
+        if (e.key === 'ArrowRight') nextPage();
+      }
+    });
+
+    // Initialize
+    loadPages();
+  </script>
+</body>
+</html>
