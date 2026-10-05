@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bitácora Scrapbook - ÁIbum Interactivo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Shadows+Into+Light&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -20,108 +20,20 @@
       font-family: 'Caveat', cursive;
     }
 
-    .book-cover {
-      background: #1a0f0a;
-      border: 8px solid #422517;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.9);
-      border-radius: 20px;
-      perspective: 2000px; /* Para efecto 3D al girar hoja */
-    }
-
-    .book-page {
-      position: relative;
-      min-height: 560px;
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.3);
-      overflow: hidden;
-      transition: background 0.3s ease;
-    }
-
-    /* Animación de giro de página */
-    .turn-next {
-      animation: flipNext 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
-    }
-    .turn-prev {
-      animation: flipPrev 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
-    }
-
-    @keyframes flipNext {
-      0% { transform: rotateY(0deg); opacity: 1; }
-      50% { transform: rotateY(-90deg); opacity: 0.5; }
-      100% { transform: rotateY(0deg); opacity: 1; }
-    }
-
-    @keyframes flipPrev {
-      0% { transform: rotateY(0deg¡Listo, Dana! Le agregué un **panel de navegación estilo bitácora justo debajo del cuaderno** con flechas decoradas, indicador del número de página y **animación 3D de giro de hoja (*page-flip*)**.
-
-### ¿Qué se sumó en esta versión?
-1. **Controles inferiores con flechas:** Botones `◀ Anterior` y `Siguiente ▶` debajo del libro con el número de página actual.
-2. **Animación 3D al pasar de página:** Al cambiar de pliego, el cuaderno realiza una animación de doblez de hoja de 180° con perspectiva.
-3. **Múltiples pliegos/páginas:** Cada par de hojas (Páginas 1-2, 3-4, 5-6, etc.) guarda de manera independiente sus stickers, textos, notas e incluso el patrón de fondo de cada página.
-
-Reemplazá tu archivo `index.html` con este código:
-
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bitácora Scrapbook - ÁIbum Interactivo</title>
-  <link href="[https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Shadows+Into+Light&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;600&display=swap](https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Shadows+Into+Light&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;600&display=swap)" rel="stylesheet">
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <style>
-    body {
-      background-color: #2b1810;
-      background-image: radial-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 0),
-                        linear-gradient(to right, #24140e, #361f15, #24140e);
-      background-size: 20px 20px, 100% 100%;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      user-select: none;
-    }
-
-    .handwriting {
-      font-family: 'Caveat', cursive;
-    }
-
     /* Estructura del libro abierto */
-    .book-wrapper {
-      perspective: 1800px;
-    }
-
     .book-cover {
       background: #1a0f0a;
       border: 8px solid #422517;
       box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.9);
       border-radius: 20px;
-      transform-style: preserve-3d;
     }
 
     .book-page {
       position: relative;
-      min-height: 560px;
+      min-height: 520px;
       box-shadow: inset 0 0 30px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.3);
       overflow: hidden;
       transition: background 0.3s ease;
-    }
-
-    /* Animación de giro de página en 3D */
-    .turning-next {
-      animation: flipNext 0.6s ease-in-out forwards;
-    }
-    .turning-prev {
-      animation: flipPrev 0.6s ease-in-out forwards;
-    }
-
-    @keyframes flipNext {
-      0% { transform: rotateY(0deg); opacity: 1; }
-      50% { transform: rotateY(-80deg) scale(0.96); opacity: 0.6; }
-      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
-    }
-
-    @keyframes flipPrev {
-      0% { transform: rotateY(0deg); opacity: 1; }
-      50% { transform: rotateY(80deg) scale(0.96); opacity: 0.6; }
-      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
     }
 
     /* Patrones de fondo seleccionables */
@@ -146,16 +58,27 @@ Reemplazá tu archivo `index.html` con este código:
       background-size: 12px 12px;
     }
 
+    /* Animación al pasar hoja */
+    .turning {
+      animation: flipPage 0.4s ease-in-out;
+    }
+
+    @keyframes flipPage {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.97); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
     /* Elementos arrastables */
     .draggable-item {
       position: absolute;
       cursor: grab;
       touch-action: none;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      transition: box-shadow 0.1s ease;
     }
     .draggable-item:active {
       cursor: grabbing;
-      transform: scale(1.04);
+      transform: scale(1.03);
       z-index: 100 !important;
     }
     .draggable-item.selected {
@@ -163,7 +86,7 @@ Reemplazá tu archivo `index.html` con este código:
       outline-offset: 4px;
     }
 
-    /* Lomo del libro central */
+    /* Lomo central */
     .book-spine {
       background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.4));
       box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
@@ -172,14 +95,14 @@ Reemplazá tu archivo `index.html` con este código:
 </head>
 <body class="min-h-screen text-gray-800 flex flex-col justify-between p-2 sm:p-6">
 
-  <!-- BARRA DE HERRAMIENTAS SUPERIOR -->
+  <!-- BARRA SUPERIOR -->
   <header class="max-w-6xl mx-auto w-full bg-[#1e120c]/90 border border-[#422517] rounded-2xl p-3 sm:p-4 mb-3 flex flex-wrap gap-3 items-center justify-between shadow-2xl backdrop-blur-md text-white text-xs sm:text-sm">
     <div class="flex items-center space-x-2">
       <span class="text-2xl">📖</span>
       <h1 class="font-bold tracking-wide text-amber-200">BITÁCORA SCRAPBOOK</h1>
     </div>
 
-    <!-- ACCIONES -->
+    <!-- BOTONES -->
     <div class="flex flex-wrap items-center gap-2">
       <button onclick="addTextPrompt()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-600/40 transition">
         ✏️ Texto / Marcador
@@ -187,12 +110,12 @@ Reemplazá tu archivo `index.html` con este código:
 
       <label class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 cursor-pointer transition">
         🎀 Subir PNG / Sticker
-        <input type="file" id="sticker-upload" accept="image/*" class="hidden" onchange="uploadSticker(event)">
+        <input type="file" accept="image/*" class="hidden" onchange="uploadSticker(event)">
       </label>
 
       <label class="bg-amber-900 hover:bg-amber-800 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-700/40 cursor-pointer transition">
         📷 Foto Polaroid
-        <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="uploadPhoto(event)">
+        <input type="file" accept="image/*" class="hidden" onchange="uploadPhoto(event)">
       </label>
 
       <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
@@ -201,10 +124,10 @@ Reemplazá tu archivo `index.html` con este código:
     </div>
   </header>
 
-  <!-- CONTENEDOR DEL LIBRO ABIERTO -->
-  <main class="max-w-6xl mx-auto w-full flex-1 flex flex-col items-center justify-center my-2 book-wrapper">
+  <!-- CONTENEDOR DEL LIBRO -->
+  <main class="max-w-6xl mx-auto w-full flex-1 flex flex-col items-center justify-center my-2">
     
-    <div class="book-cover w-full p-3 sm:p-6 relative" id="book-container">
+    <div class="book-cover w-full p-3 sm:p-6 relative">
       
       <!-- CONTROLES DE FONDO DE PÁGINAS -->
       <div class="flex justify-between items-center mb-3 px-2 text-amber-200/80 text-xs font-semibold">
@@ -214,4 +137,292 @@ Reemplazá tu archivo `index.html` con este código:
             <option value="bg-polkadot">🔴 Lunares Rojos</option>
             <option value="bg-kraft">📦 Papel Kraft</option>
             <option value="bg-gingham">🏁 Cuadrícula Vichy</option>
-            <option value="bg-crumpled">
+            <option value="bg-crumpled">📜 Papel Arrugado</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span>Página Der:</span>
+          <select id="select-right-bg" onchange="changePageBg('right', this.value)" class="bg-[#2b1810] border border-[#52301f] text-amber-100 rounded px-2 py-1 focus:outline-none">
+            <option value="bg-kraft">📦 Papel Kraft</option>
+            <option value="bg-polkadot">🔴 Lunares Rojos</option>
+            <option value="bg-gingham">🏁 Cuadrícula Vichy</option>
+            <option value="bg-crumpled">📜 Papel Arrugado</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- LIENZO DE PÁGINAS -->
+      <div id="pages-spread" class="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-xl overflow-hidden relative shadow-2xl">
+        
+        <!-- PÁGINA IZQUIERDA -->
+        <div id="page-left" class="book-page bg-polkadot p-6 border-r border-black/20"></div>
+
+        <!-- LOMO CENTRAL -->
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine z-30 pointer-events-none"></div>
+
+        <!-- PÁGINA DERECHA -->
+        <div id="page-right" class="book-page bg-kraft p-6 border-l border-black/20"></div>
+
+      </div>
+    </div>
+
+    <!-- FLECHAS Y CAMBIO DE PÁGINA ABAJO DEL CUADERNO -->
+    <div class="flex items-center justify-center gap-6 mt-4 bg-[#1e120c]/90 border border-[#422517] px-6 py-2.5 rounded-full shadow-2xl backdrop-blur-md">
+      <button onclick="prevPage()" class="flex items-center gap-2 bg-amber-900/80 hover:bg-amber-800 text-amber-200 font-bold px-4 py-2 rounded-full border border-amber-600/40 transition active:scale-95">
+        <span>◀</span>
+        <span class="text-xs sm:text-sm">Anterior</span>
+      </button>
+
+      <div class="text-amber-100 font-semibold text-xs sm:text-sm tracking-widest px-2" id="page-indicator">
+        PÁGINAS 1 - 2
+      </div>
+
+      <button onclick="nextPage()" class="flex items-center gap-2 bg-amber-900/80 hover:bg-amber-800 text-amber-200 font-bold px-4 py-2 rounded-full border border-amber-600/40 transition active:scale-95">
+        <span class="text-xs sm:text-sm">Siguiente</span>
+        <span>▶</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- MODAL PARA TEXTO -->
+  <div id="text-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="font-bold text-lg text-amber-200">Escribir Nota / Texto</h3>
+      <div>
+        <label class="block text-xs mb-1 text-amber-300/80">Texto en marcador mano alzada:</label>
+        <textarea id="modal-text-input" rows="3" class="w-full bg-[#150a06] border border-[#422517] rounded-xl p-3 text-white text-lg handwriting focus:outline-none focus:border-amber-500"></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs mb-1 text-amber-300/80">Color del marcador:</label>
+          <input type="color" id="modal-color-input" value="#ba2d32" class="w-full h-10 bg-transparent cursor-pointer rounded">
+        </div>
+        <div>
+          <label class="block text-xs mb-1 text-amber-300/80">Tamaño de letra:</label>
+          <select id="modal-size-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
+            <option value="text-2xl">Mediano</option>
+            <option value="text-4xl" selected>Grande</option>
+            <option value="text-5xl">Muy Grande</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeTextModal()" class="px-4 py-2 bg-stone-800 rounded-lg text-xs">Cancelar</button>
+        <button onclick="saveTextItem()" class="px-5 py-2 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Guardar en Libro</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentSpread = 0;
+    let spreads = [
+      { leftBg: 'bg-polkadot', rightBg: 'bg-kraft' },
+      { leftBg: 'bg-gingham', rightBg: 'bg-crumpled' }
+    ];
+
+    let activeElement = null;
+    let currentEditTarget = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSpread();
+      createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg");
+    });
+
+    function renderSpread() {
+      const data = spreads[currentSpread];
+      const pageLeft = document.getElementById('page-left');
+      const pageRight = document.getElementById('page-right');
+
+      pageLeft.className = `book-page ${data.leftBg} p-6 border-r border-black/20`;
+      pageRight.className = `book-page ${data.rightBg} p-6 border-l border-black/20`;
+
+      document.getElementById('select-left-bg').value = data.leftBg;
+      document.getElementById('select-right-bg').value = data.rightBg;
+
+      const pLeft = (currentSpread * 2) + 1;
+      const pRight = (currentSpread * 2) + 2;
+      document.getElementById('page-indicator').innerText = `PÁGINAS ${pLeft} - ${pRight}`;
+    }
+
+    function nextPage() {
+      triggerAnimation(() => {
+        currentSpread++;
+        if (!spreads[currentSpread]) {
+          spreads.push({ leftBg: 'bg-kraft', rightBg: 'bg-polkadot' });
+        }
+        renderSpread();
+      });
+    }
+
+    function prevPage() {
+      if (currentSpread === 0) return;
+      triggerAnimation(() => {
+        currentSpread--;
+        renderSpread();
+      });
+    }
+
+    function triggerAnimation(callback) {
+      const spreadEl = document.getElementById('pages-spread');
+      spreadEl.classList.add('turning');
+      setTimeout(() => {
+        callback();
+        spreadEl.classList.remove('turning');
+      }, 200);
+    }
+
+    function changePageBg(side, bgClass) {
+      if (side === 'left') {
+        spreads[currentSpread].leftBg = bgClass;
+      } else {
+        spreads[currentSpread].rightBg = bgClass;
+      }
+      renderSpread();
+    }
+
+    function uploadPhoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) { createPolaroid(e.target.result); };
+      reader.readAsDataURL(file);
+    }
+
+    function createPolaroid(imgSrc) {
+      const container = document.getElementById('page-left');
+      const item = document.createElement('div');
+      item.className = 'draggable-item p-3 bg-amber-50/95 shadow-xl border border-stone-300/60 -rotate-2';
+      item.style.left = '40px';
+      item.style.top = '60px';
+      item.style.width = '220px';
+
+      item.innerHTML = `
+        <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200">
+          <img src="${imgSrc}" class="w-full h-full object-cover">
+        </div>
+        <p class="handwriting text-center text-xl text-stone-800 leading-none py-1" contenteditable="true">Mi Recuerdo</p>
+      `;
+
+      makeDraggable(item);
+      container.appendChild(item);
+    }
+
+    function uploadSticker(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) { createSticker(e.target.result); };
+      reader.readAsDataURL(file);
+    }
+
+    function createSticker(imgSrc) {
+      const container = document.getElementById('page-right');
+      const item = document.createElement('div');
+      item.className = 'draggable-item rotate-3';
+      item.style.left = '60px';
+      item.style.top = '80px';
+      item.style.width = '120px';
+
+      item.innerHTML = `<img src="${imgSrc}" class="w-full h-auto drop-shadow-md pointer-events-none">`;
+
+      makeDraggable(item);
+      container.appendChild(item);
+    }
+
+    function addTextPrompt() {
+      currentEditTarget = null;
+      document.getElementById('modal-text-input').value = '';
+      document.getElementById('text-modal').classList.remove('hidden');
+    }
+
+    function closeTextModal() {
+      document.getElementById('text-modal').classList.add('hidden');
+    }
+
+    function saveTextItem() {
+      const text = document.getElementById('modal-text-input').value;
+      const color = document.getElementById('modal-color-input').value;
+      const size = document.getElementById('modal-size-input').value;
+
+      if (!text.trim()) return;
+
+      if (currentEditTarget) {
+        currentEditTarget.style.color = color;
+        currentEditTarget.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab`;
+        currentEditTarget.innerText = text;
+      } else {
+        const container = document.getElementById('page-right');
+        const item = document.createElement('div');
+        item.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
+        item.style.left = '30px';
+        item.style.top = '40px';
+        item.style.color = color;
+        item.innerText = text;
+
+        item.ondblclick = function() {
+          currentEditTarget = item;
+          document.getElementById('modal-text-input').value = item.innerText;
+          document.getElementById('text-modal').classList.remove('hidden');
+        };
+
+        makeDraggable(item);
+        container.appendChild(item);
+      }
+
+      closeTextModal();
+    }
+
+    function makeDraggable(element) {
+      let posX = 0, posY = 0, initialX = 0, initialY = 0;
+
+      element.onpointerdown = dragMouseDown;
+
+      function dragMouseDown(e) {
+        e.preventDefault();
+        selectElement(element);
+
+        initialX = e.clientX;
+        initialY = e.clientY;
+
+        document.onpointermove = elementDrag;
+        document.onpointerup = closeDragElement;
+      }
+
+      function elementDrag(e) {
+        e.preventDefault();
+        posX = initialX - e.clientX;
+        posY = initialY - e.clientY;
+        initialX = e.clientX;
+        initialY = e.clientY;
+
+        element.style.top = (element.offsetTop - posY) + "px";
+        element.style.left = (element.offsetLeft - posX) + "px";
+      }
+
+      function closeDragElement() {
+        document.onpointermove = null;
+        document.onpointerup = null;
+      }
+    }
+
+    function selectElement(el) {
+      if (activeElement) {
+        activeElement.classList.remove('selected');
+      }
+      activeElement = el;
+      activeElement.classList.add('selected');
+    }
+
+    function deleteSelected() {
+      if (activeElement) {
+        activeElement.remove();
+        activeElement = null;
+      }
+    }
+  </script>
+</body>
+</html>
