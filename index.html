@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bitácora Scrapbook - ÁIbum Interactivo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Importación de Google Fonts incluyendo las 3 elegidas -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Comic+Neue:wght@400;700&family=Flavors&family=Plus+Jakarta+Sans:wght@400;600&family=Schoolbell&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -16,9 +17,11 @@
       user-select: none;
     }
 
-    .handwriting {
-      font-family: 'Caveat', cursive;
-    }
+    /* Clases de fuentes personalizadas */
+    .font-schoolbell { font-family: 'Schoolbell', cursive; }
+    .font-flavors { font-family: 'Flavors', cursive; }
+    .font-comicneue { font-family: 'Comic Neue', cursive; }
+    .font-caveat { font-family: 'Caveat', cursive; }
 
     /* Estructura del libro abierto */
     .book-cover {
@@ -36,7 +39,7 @@
       transition: background 0.3s ease;
     }
 
-    /* Patrones de fondo seleccionables */
+    /* Patrones de fondo */
     .bg-kraft {
       background-color: #d7b38c;
       background-image: radial-gradient(#c29b70 1px, transparent 0);
@@ -58,7 +61,7 @@
       background-size: 12px 12px;
     }
 
-    /* Animación al pasar hoja */
+    /* Animación de páginas */
     .turning {
       animation: flipPage 0.3s ease-in-out;
     }
@@ -87,7 +90,6 @@
       outline-offset: 4px;
     }
 
-    /* Lomo central */
     .book-spine {
       background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.4));
       box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
@@ -107,7 +109,7 @@
     <!-- BOTONES DE ACCIÓN -->
     <div class="flex flex-wrap items-center gap-2">
       <button onclick="addTextPrompt()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-600/40 transition">
-        ✏️ Texto / Marcador
+        ✏️️ Texto / Marcador
       </button>
 
       <button onclick="triggerStickerUpload()" class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 transition">
@@ -160,16 +162,9 @@
 
       <!-- LIENZO DE PÁGINAS -->
       <div id="pages-spread" class="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-xl overflow-hidden relative shadow-2xl">
-        
-        <!-- PÁGINA IZQUIERDA -->
         <div id="page-left" class="book-page bg-polkadot p-6 border-r border-black/20"></div>
-
-        <!-- LOMO CENTRAL -->
         <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine pointer-events-none"></div>
-
-        <!-- PÁGINA DERECHA -->
         <div id="page-right" class="book-page bg-kraft p-6 border-l border-black/20"></div>
-
       </div>
     </div>
 
@@ -197,13 +192,23 @@
     <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <h3 class="font-bold text-lg text-amber-200">Escribir Nota / Texto</h3>
       <div>
-        <label class="block text-xs mb-1 text-amber-300/80">Texto en marcador mano alzada:</label>
-        <textarea id="modal-text-input" rows="3" class="w-full bg-[#150a06] border border-[#422517] rounded-xl p-3 text-white text-lg handwriting focus:outline-none focus:border-amber-500"></textarea>
+        <label class="block text-xs mb-1 text-amber-300/80">Texto:</label>
+        <textarea id="modal-text-input" rows="3" class="w-full bg-[#150a06] border border-[#422517] rounded-xl p-3 text-white text-lg font-schoolbell focus:outline-none focus:border-amber-500"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs mb-1 text-amber-300/80">Estilo de Fuente:</label>
+        <select id="modal-font-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2" onchange="updateModalFontPreview(this.value)">
+          <option value="font-schoolbell" selected>Schoolbell (Escolar / Manuscrita)</option>
+          <option value="font-flavors">Flavors (Divertida / Decorativa)</option>
+          <option value="font-comicneue">Comic Neue (Limpia / Cómic)</option>
+          <option value="font-caveat">Caveat (Marcador Cursiva)</option>
+        </select>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs mb-1 text-amber-300/80">Ubicación de la página:</label>
+          <label class="block text-xs mb-1 text-amber-300/80">Ubicación:</label>
           <select id="modal-target-page" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
             <option value="left">Página Izquierda</option>
             <option value="right" selected>Página Derecha</option>
@@ -398,14 +403,13 @@
         <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200 pointer-events-none">
           <img src="${imgSrc}" class="w-full h-full object-cover">
         </div>
-        <p class="handwriting text-center text-xl text-stone-800 leading-none py-1" contenteditable="true" oninput="saveToLocalStorage()">Mi Recuerdo</p>
+        <p class="font-schoolbell text-center text-xl text-stone-800 leading-none py-1" contenteditable="true" oninput="saveToLocalStorage()">Mi Recuerdo</p>
       `;
 
       makeDraggable(item);
       container.appendChild(item);
     }
 
-    // Modal y lógica de selección de página para stickers
     function triggerStickerUpload() {
       document.getElementById('sticker-modal').classList.remove('hidden');
     }
@@ -456,8 +460,14 @@
       document.getElementById('text-modal').classList.add('hidden');
     }
 
+    function updateModalFontPreview(fontClass) {
+      const textarea = document.getElementById('modal-text-input');
+      textarea.className = `w-full bg-[#150a06] border border-[#422517] rounded-xl p-3 text-white text-lg ${fontClass} focus:outline-none focus:border-amber-500`;
+    }
+
     function saveTextItem() {
       const text = document.getElementById('modal-text-input').value;
+      const fontClass = document.getElementById('modal-font-input').value;
       const color = document.getElementById('modal-color-input').value;
       const size = document.getElementById('modal-size-input').value;
       const targetSide = document.getElementById('modal-target-page').value;
@@ -466,12 +476,12 @@
 
       if (currentEditTarget) {
         currentEditTarget.style.color = color;
-        currentEditTarget.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab`;
+        currentEditTarget.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab`;
         currentEditTarget.innerText = text;
       } else {
         const container = document.getElementById(targetSide === 'left' ? 'page-left' : 'page-right');
         const item = document.createElement('div');
-        item.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
+        item.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
         item.style.left = '40px';
         item.style.top = '60px';
         item.style.color = color;
@@ -491,7 +501,6 @@
       saveToLocalStorage();
     }
 
-    // Modal y lógica para redimensionar
     function openResizeModal(item) {
       targetStickerForResize = item;
       const currentWidth = parseInt(item.style.width) || 120;
@@ -519,20 +528,18 @@
 
       element.onpointerdown = dragMouseDown;
 
-      // Evento de rueda del mouse para cambiar tamaño
       element.onwheel = function(e) {
         e.preventDefault();
         let currentWidth = parseInt(element.style.width) || 120;
         if (e.deltaY < 0) {
-          currentWidth += 8; // Agrandar
+          currentWidth += 8;
         } else {
-          currentWidth = Math.max(30, currentWidth - 8); // Achicar
+          currentWidth = Math.max(30, currentWidth - 8);
         }
         element.style.width = currentWidth + 'px';
         saveToLocalStorage();
       };
 
-      // Doble clic para abrir el menú de ajuste preciso
       element.ondblclick = function(e) {
         if (element.querySelector('img')) {
           openResizeModal(element);
