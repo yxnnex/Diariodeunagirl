@@ -69,7 +69,7 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    /* Elementos arrastables */
+    /* Elementos arrastrabes */
     .draggable-item {
       position: absolute;
       cursor: grab;
@@ -110,10 +110,10 @@
         ✏️ Texto / Marcador
       </button>
 
-      <label class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 cursor-pointer transition">
+      <button onclick="triggerStickerUpload()" class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 transition">
         🎀 Subir PNG / Sticker
-        <input type="file" accept="image/*" class="hidden" onchange="uploadSticker(event)">
-      </label>
+      </button>
+      <input type="file" id="sticker-input" accept="image/*" class="hidden" onchange="uploadSticker(event)">
 
       <label class="bg-amber-900 hover:bg-amber-800 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-700/40 cursor-pointer transition">
         📷 Foto Polaroid
@@ -231,6 +231,25 @@
     </div>
   </div>
 
+  <!-- MODAL SELECCIÓN DE PÁGINA PARA STICKER -->
+  <div id="sticker-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+      <h3 class="font-bold text-lg text-amber-200">¿En qué página quieres colocar el sticker?</h3>
+      <div>
+        <label class="block text-xs mb-1 text-amber-300/80">Seleccionar página:</label>
+        <select id="sticker-target-page" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
+          <option value="left">Página Izquierda</option>
+          <option value="right" selected>Página Derecha</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeStickerModal()" class="px-4 py-2 bg-stone-800 rounded-lg text-xs">Cancelar</button>
+        <button onclick="confirmStickerUpload()" class="px-5 py-2 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Seleccionar Imagen</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE_KEY = 'scrapbook_album_data';
     let currentSpread = 0;
@@ -240,13 +259,13 @@
 
     let activeElement = null;
     let currentEditTarget = null;
+    let selectedStickerSide = 'right';
 
     document.addEventListener('DOMContentLoaded', () => {
       loadSavedData();
       renderSpread();
     });
 
-    // Guardar en el almacenamiento local del navegador
     function saveToLocalStorage() {
       saveCurrentSpreadState();
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -255,7 +274,6 @@
       }));
     }
 
-    // Cargar datos guardados previamente
     function loadSavedData() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -267,7 +285,6 @@
           console.error("Error al cargar datos guardados:", e);
         }
       } else {
-        // Cargar elemento por defecto la primera vez que se abre la app
         createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
       }
     }
@@ -372,15 +389,31 @@
       container.appendChild(item);
     }
 
+    // Modal y lógica de selección de página para stickers
+    function triggerStickerUpload() {
+      document.getElementById('sticker-modal').classList.remove('hidden');
+    }
+
+    function closeStickerModal() {
+      document.getElementById('sticker-modal').classList.add('hidden');
+    }
+
+    function confirmStickerUpload() {
+      selectedStickerSide = document.getElementById('sticker-target-page').value;
+      closeStickerModal();
+      document.getElementById('sticker-input').click();
+    }
+
     function uploadSticker(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) { 
-        createSticker(e.target.result, 'right');
+        createSticker(e.target.result, selectedStickerSide);
         saveToLocalStorage();
       };
       reader.readAsDataURL(file);
+      event.target.value = '';
     }
 
     function createSticker(imgSrc, side = 'right') {
