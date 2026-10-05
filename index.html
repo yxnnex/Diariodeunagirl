@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bitácora Scrapbook - ÁIbum Interactivo</title>
-  <!-- Importación de Google Fonts incluyendo las 3 elegidas -->
+  <title>Bitácora Scrapbook - Álbum Interactivo</title>
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Comic+Neue:wght@400;700&family=Flavors&family=Plus+Jakarta+Sans:wght@400;600&family=Schoolbell&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -17,13 +17,13 @@
       user-select: none;
     }
 
-    /* Clases de fuentes personalizadas */
+    /* Fuentes */
     .font-schoolbell { font-family: 'Schoolbell', cursive; }
     .font-flavors { font-family: 'Flavors', cursive; }
     .font-comicneue { font-family: 'Comic Neue', cursive; }
     .font-caveat { font-family: 'Caveat', cursive; }
 
-    /* Estructura del libro abierto */
+    /* Estructura del libro */
     .book-cover {
       background: #1a0f0a;
       border: 8px solid #422517;
@@ -39,7 +39,7 @@
       transition: background 0.3s ease;
     }
 
-    /* Patrones de fondo */
+    /* Fondos */
     .bg-kraft {
       background-color: #d7b38c;
       background-image: radial-gradient(#c29b70 1px, transparent 0);
@@ -61,28 +61,26 @@
       background-size: 12px 12px;
     }
 
-    /* Animación de páginas */
+    /* Animación */
     .turning {
-      animation: flipPage 0.3s ease-in-out;
+      animation: flipPage 0.25s ease-in-out;
     }
 
     @keyframes flipPage {
       0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.97); }
+      50% { opacity: 0.3; transform: scale(0.98); }
       100% { opacity: 1; transform: scale(1); }
     }
 
-    /* Elementos arrastrabes */
+    /* Items */
     .draggable-item {
       position: absolute;
       cursor: grab;
       touch-action: none;
-      transition: box-shadow 0.1s ease;
       z-index: 10;
     }
     .draggable-item:active {
       cursor: grabbing;
-      transform: scale(1.03);
       z-index: 100 !important;
     }
     .draggable-item.selected {
@@ -106,10 +104,10 @@
       <h1 class="font-bold tracking-wide text-amber-200">BITÁCORA SCRAPBOOK</h1>
     </div>
 
-    <!-- BOTONES DE ACCIÓN -->
+    <!-- BOTONES -->
     <div class="flex flex-wrap items-center gap-2">
       <button onclick="addTextPrompt()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-600/40 transition">
-        ✏️️ Texto / Marcador
+        ✏ Texto / Marcador
       </button>
 
       <button onclick="triggerStickerUpload()" class="bg-red-800 hover:bg-red-700 text-red-100 font-semibold px-3 py-1.5 rounded-lg border border-red-600/40 transition">
@@ -123,21 +121,20 @@
       </label>
 
       <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
-        🗑️ Borrar Selección
+        🗑️ Borrar
       </button>
 
       <button onclick="clearAllData()" class="bg-red-950 hover:bg-red-900 text-red-200 px-3 py-1.5 rounded-lg border border-red-800 transition">
-        ⚠️ Reiniciar Álbum
+        ⚠️ Reiniciar
       </button>
     </div>
   </header>
 
-  <!-- CONTENEDOR DEL LIBRO -->
+  <!-- LIBRO -->
   <main class="max-w-6xl mx-auto w-full flex-1 flex flex-col items-center justify-center my-2">
-    
     <div class="book-cover w-full p-3 sm:p-6 relative">
       
-      <!-- CONTROLES DE FONDO DE PÁGINAS -->
+      <!-- SELECCIÓN DE FONDOS -->
       <div class="flex justify-between items-center mb-3 px-2 text-amber-200/80 text-xs font-semibold">
         <div class="flex items-center gap-2">
           <span>Página Izq:</span>
@@ -160,7 +157,7 @@
         </div>
       </div>
 
-      <!-- LIENZO DE PÁGINAS -->
+      <!-- PÁGINAS -->
       <div id="pages-spread" class="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-xl overflow-hidden relative shadow-2xl">
         <div id="page-left" class="book-page bg-polkadot p-6 border-r border-black/20"></div>
         <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine pointer-events-none"></div>
@@ -168,7 +165,7 @@
       </div>
     </div>
 
-    <!-- NAVEGACIÓN INFERIOR DE PÁGINAS -->
+    <!-- NAVEGACIÓN -->
     <div class="flex items-center justify-center gap-6 mt-4 bg-[#1e120c]/90 border border-[#422517] px-6 py-2.5 rounded-full shadow-2xl backdrop-blur-md">
       <button onclick="prevPage()" class="flex items-center gap-2 bg-amber-900/80 hover:bg-amber-800 text-amber-200 font-bold px-4 py-2 rounded-full border border-amber-600/40 transition active:scale-95">
         <span>◀</span>
@@ -184,10 +181,9 @@
         <span>▶</span>
       </button>
     </div>
-
   </main>
 
-  <!-- MODAL PARA TEXTO -->
+  <!-- MODAL TEXTO -->
   <div id="text-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <h3 class="font-bold text-lg text-amber-200">Escribir Nota / Texto</h3>
@@ -198,7 +194,7 @@
 
       <div>
         <label class="block text-xs mb-1 text-amber-300/80">Estilo de Fuente:</label>
-        <select id="modal-font-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2" onchange="updateModalFontPreview(this.value)">
+        <select id="modal-font-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
           <option value="font-schoolbell" selected>Schoolbell (Escolar / Manuscrita)</option>
           <option value="font-flavors">Flavors (Divertida / Decorativa)</option>
           <option value="font-comicneue">Comic Neue (Limpia / Cómic)</option>
@@ -236,18 +232,16 @@
     </div>
   </div>
 
-  <!-- MODAL SELECCIÓN DE PÁGINA PARA STICKER -->
+  <!-- MODAL STICKER -->
   <div id="sticker-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
-      <h3 class="font-bold text-lg text-amber-200">¿En qué página quieres colocar el sticker?</h3>
+      <h3 class="font-bold text-lg text-amber-200">¿En qué página querés colocar el sticker?</h3>
       <div>
-        <label class="block text-xs mb-1 text-amber-300/80">Seleccionar página:</label>
         <select id="sticker-target-page" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
           <option value="left">Página Izquierda</option>
           <option value="right" selected>Página Derecha</option>
         </select>
       </div>
-
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeStickerModal()" class="px-4 py-2 bg-stone-800 rounded-lg text-xs">Cancelar</button>
         <button onclick="confirmStickerUpload()" class="px-5 py-2 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Seleccionar Imagen</button>
@@ -255,23 +249,8 @@
     </div>
   </div>
 
-  <!-- MODAL PARA CAMBIAR TAMAÑO DE STICKER -->
-  <div id="resize-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-xs w-full p-5 shadow-2xl space-y-4">
-      <h3 class="font-bold text-base text-amber-200">Ajustar Tamaño del Sticker</h3>
-      <div>
-        <label class="block text-xs mb-1 text-amber-300/80">Ancho (píxeles):</label>
-        <input type="number" id="resize-width-input" min="30" max="500" class="w-full bg-[#150a06] border border-[#422517] rounded-xl p-2 text-white text-center font-bold focus:outline-none">
-      </div>
-      <div class="flex justify-end gap-2 pt-1">
-        <button onclick="closeResizeModal()" class="px-3 py-1.5 bg-stone-800 rounded-lg text-xs">Cancelar</button>
-        <button onclick="applyStickerResize()" class="px-4 py-1.5 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Aplicar</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    const STORAGE_KEY = 'scrapbook_album_data';
+    const STORAGE_KEY = 'scrapbook_album_data_v2';
     let currentSpread = 0;
     let spreads = [
       { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [] }
@@ -280,12 +259,23 @@
     let activeElement = null;
     let currentEditTarget = null;
     let selectedStickerSide = 'right';
-    let targetStickerForResize = null;
 
     document.addEventListener('DOMContentLoaded', () => {
       loadSavedData();
       renderSpread();
     });
+
+    function saveCurrentSpreadState() {
+      const leftPage = document.getElementById('page-left');
+      const rightPage = document.getElementById('page-right');
+      if (!leftPage || !rightPage) return;
+
+      // Limpiar bordes de selección antes de guardar
+      document.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
+
+      spreads[currentSpread].leftContent = Array.from(leftPage.children).map(el => el.outerHTML);
+      spreads[currentSpread].rightContent = Array.from(rightPage.children).map(el => el.outerHTML);
+    }
 
     function saveToLocalStorage() {
       saveCurrentSpreadState();
@@ -303,19 +293,12 @@
           spreads = parsed.spreads || spreads;
           currentSpread = parsed.currentSpread || 0;
         } catch (e) {
-          console.error("Error al cargar datos guardados:", e);
+          console.error("Error al cargar datos:", e);
         }
       } else {
         createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
+        saveCurrentSpreadState();
       }
-    }
-
-    function saveCurrentSpreadState() {
-      const leftPage = document.getElementById('page-left');
-      const rightPage = document.getElementById('page-right');
-
-      spreads[currentSpread].leftContent = Array.from(leftPage.children).map(el => el.outerHTML);
-      spreads[currentSpread].rightContent = Array.from(rightPage.children).map(el => el.outerHTML);
     }
 
     function renderSpread() {
@@ -329,8 +312,8 @@
       document.getElementById('select-left-bg').value = data.leftBg;
       document.getElementById('select-right-bg').value = data.rightBg;
 
-      pageLeft.innerHTML = data.leftContent.join('');
-      pageRight.innerHTML = data.rightContent.join('');
+      pageLeft.innerHTML = (data.leftContent || []).join('');
+      pageRight.innerHTML = (data.rightContent || []).join('');
 
       document.querySelectorAll('.draggable-item').forEach(makeDraggable);
 
@@ -340,12 +323,20 @@
     }
 
     function nextPage() {
-      saveToLocalStorage();
+      saveCurrentSpreadState(); // Guardar antes de cambiar
+      currentSpread++;
+
+      // Crear nuevo conjunto de páginas si no existe
+      if (!spreads[currentSpread]) {
+        spreads.push({
+          leftBg: 'bg-kraft',
+          rightBg: 'bg-crumpled',
+          leftContent: [],
+          rightContent: []
+        });
+      }
+
       triggerAnimation(() => {
-        currentSpread++;
-        if (!spreads[currentSpread]) {
-          spreads.push({ leftBg: 'bg-kraft', rightBg: 'bg-crumpled', leftContent: [], rightContent: [] });
-        }
         renderSpread();
         saveToLocalStorage();
       });
@@ -353,9 +344,9 @@
 
     function prevPage() {
       if (currentSpread === 0) return;
-      saveToLocalStorage();
+      saveCurrentSpreadState();
+      currentSpread--;
       triggerAnimation(() => {
-        currentSpread--;
         renderSpread();
         saveToLocalStorage();
       });
@@ -367,7 +358,7 @@
       setTimeout(() => {
         callback();
         spreadEl.classList.remove('turning');
-      }, 200);
+      }, 150);
     }
 
     function changePageBg(side, bgClass) {
@@ -460,11 +451,6 @@
       document.getElementById('text-modal').classList.add('hidden');
     }
 
-    function updateModalFontPreview(fontClass) {
-      const textarea = document.getElementById('modal-text-input');
-      textarea.className = `w-full bg-[#150a06] border border-[#422517] rounded-xl p-3 text-white text-lg ${fontClass} focus:outline-none focus:border-amber-500`;
-    }
-
     function saveTextItem() {
       const text = document.getElementById('modal-text-input').value;
       const fontClass = document.getElementById('modal-font-input').value;
@@ -474,53 +460,19 @@
 
       if (!text.trim()) return;
 
-      if (currentEditTarget) {
-        currentEditTarget.style.color = color;
-        currentEditTarget.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab`;
-        currentEditTarget.innerText = text;
-      } else {
-        const container = document.getElementById(targetSide === 'left' ? 'page-left' : 'page-right');
-        const item = document.createElement('div');
-        item.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
-        item.style.left = '40px';
-        item.style.top = '60px';
-        item.style.color = color;
-        item.innerText = text;
+      const container = document.getElementById(targetSide === 'left' ? 'page-left' : 'page-right');
+      const item = document.createElement('div');
+      item.className = `draggable-item ${fontClass} ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
+      item.style.left = '40px';
+      item.style.top = '60px';
+      item.style.color = color;
+      item.innerText = text;
 
-        item.ondblclick = function() {
-          currentEditTarget = item;
-          document.getElementById('modal-text-input').value = item.innerText;
-          document.getElementById('text-modal').classList.remove('hidden');
-        };
-
-        makeDraggable(item);
-        container.appendChild(item);
-      }
+      makeDraggable(item);
+      container.appendChild(item);
 
       closeTextModal();
       saveToLocalStorage();
-    }
-
-    function openResizeModal(item) {
-      targetStickerForResize = item;
-      const currentWidth = parseInt(item.style.width) || 120;
-      document.getElementById('resize-width-input').value = currentWidth;
-      document.getElementById('resize-modal').classList.remove('hidden');
-    }
-
-    function closeResizeModal() {
-      document.getElementById('resize-modal').classList.add('hidden');
-      targetStickerForResize = null;
-    }
-
-    function applyStickerResize() {
-      if (!targetStickerForResize) return;
-      const newWidth = parseInt(document.getElementById('resize-width-input').value);
-      if (newWidth && newWidth >= 20) {
-        targetStickerForResize.style.width = newWidth + 'px';
-        saveToLocalStorage();
-      }
-      closeResizeModal();
     }
 
     function makeDraggable(element) {
@@ -538,12 +490,6 @@
         }
         element.style.width = currentWidth + 'px';
         saveToLocalStorage();
-      };
-
-      element.ondblclick = function(e) {
-        if (element.querySelector('img')) {
-          openResizeModal(element);
-        }
       };
 
       function dragMouseDown(e) {
