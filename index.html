@@ -30,7 +30,7 @@
 
     .book-page {
       position: relative;
-      min-height: 520px;
+      min-height: 540px;
       box-shadow: inset 0 0 30px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.3);
       overflow: hidden;
       transition: background 0.3s ease;
@@ -60,12 +60,12 @@
 
     /* Animación al pasar hoja */
     .turning {
-      animation: flipPage 0.4s ease-in-out;
+      animation: flipPage 0.3s ease-in-out;
     }
 
     @keyframes flipPage {
       0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.97); }
+      50% { opacity: 0.4; transform: scale(0.97); }
       100% { opacity: 1; transform: scale(1); }
     }
 
@@ -102,7 +102,7 @@
       <h1 class="font-bold tracking-wide text-amber-200">BITÁCORA SCRAPBOOK</h1>
     </div>
 
-    <!-- BOTONES -->
+    <!-- BOTONES DE ACCIÓN -->
     <div class="flex flex-wrap items-center gap-2">
       <button onclick="addTextPrompt()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-600/40 transition">
         ✏️ Texto / Marcador
@@ -119,7 +119,7 @@
       </label>
 
       <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
-        🗑️ Borrar Selección
+        🗑️️ Borrar Selección
       </button>
     </div>
   </header>
@@ -167,7 +167,7 @@
       </div>
     </div>
 
-    <!-- FLECHAS Y CAMBIO DE PÁGINA ABAJO DEL CUADERNO -->
+    <!-- NAVEGACIÓN INFERIOR DE PÁGINAS -->
     <div class="flex items-center justify-center gap-6 mt-4 bg-[#1e120c]/90 border border-[#422517] px-6 py-2.5 rounded-full shadow-2xl backdrop-blur-md">
       <button onclick="prevPage()" class="flex items-center gap-2 bg-amber-900/80 hover:bg-amber-800 text-amber-200 font-bold px-4 py-2 rounded-full border border-amber-600/40 transition active:scale-95">
         <span>◀</span>
@@ -219,40 +219,61 @@
 
   <script>
     let currentSpread = 0;
+    // Estructura para almacenar fondos y contenido de cada página de forma aislada
     let spreads = [
-      { leftBg: 'bg-polkadot', rightBg: 'bg-kraft' },
-      { leftBg: 'bg-gingham', rightBg: 'bg-crumpled' }
+      { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [] }
     ];
 
     let activeElement = null;
     let currentEditTarget = null;
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Cargar primer pliego con una foto de ejemplo en la página 1
+      createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
       renderSpread();
-      createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg");
     });
 
+    // Guardar el estado actual de las páginas antes de cambiar de pliego
+    function saveCurrentSpreadState() {
+      const leftPage = document.getElementById('page-left');
+      const rightPage = document.getElementById('page-right');
+
+      spreads[currentSpread].leftContent = Array.from(leftPage.children).map(el => el.outerHTML);
+      spreads[currentSpread].rightContent = Array.from(rightPage.children).map(el => el.outerHTML);
+    }
+
+    // Renderizar el pliego y restaurar sus elementos
     function renderSpread() {
       const data = spreads[currentSpread];
       const pageLeft = document.getElementById('page-left');
       const pageRight = document.getElementById('page-right');
 
+      // Aplicar fondos
       pageLeft.className = `book-page ${data.leftBg} p-6 border-r border-black/20`;
       pageRight.className = `book-page ${data.rightBg} p-6 border-l border-black/20`;
 
       document.getElementById('select-left-bg').value = data.leftBg;
       document.getElementById('select-right-bg').value = data.rightBg;
 
+      // Cargar contenidos almacenados para este pliego
+      pageLeft.innerHTML = data.leftContent.join('');
+      pageRight.innerHTML = data.rightContent.join('');
+
+      // Reactivar la interactividad drag and drop
+      document.querySelectorAll('.draggable-item').forEach(makeDraggable);
+
+      // Actualizar número de páginas
       const pLeft = (currentSpread * 2) + 1;
       const pRight = (currentSpread * 2) + 2;
       document.getElementById('page-indicator').innerText = `PÁGINAS ${pLeft} - ${pRight}`;
     }
 
     function nextPage() {
+      saveCurrentSpreadState();
       triggerAnimation(() => {
         currentSpread++;
         if (!spreads[currentSpread]) {
-          spreads.push({ leftBg: 'bg-kraft', rightBg: 'bg-polkadot' });
+          spreads.push({ leftBg: 'bg-kraft', rightBg: 'bg-crumpled', leftContent: [], rightContent: [] });
         }
         renderSpread();
       });
@@ -260,6 +281,7 @@
 
     function prevPage() {
       if (currentSpread === 0) return;
+      saveCurrentSpreadState();
       triggerAnimation(() => {
         currentSpread--;
         renderSpread();
@@ -284,16 +306,17 @@
       renderSpread();
     }
 
+    // Subir Fotos y Stickers
     function uploadPhoto(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) { createPolaroid(e.target.result); };
+      reader.onload = function(e) { createPolaroid(e.target.result, 'left'); };
       reader.readAsDataURL(file);
     }
 
-    function createPolaroid(imgSrc) {
-      const container = document.getElementById('page-left');
+    function createPolaroid(imgSrc, side = 'left') {
+      const container = document.getElementById(side === 'left' ? 'page-left' : 'page-right');
       const item = document.createElement('div');
       item.className = 'draggable-item p-3 bg-amber-50/95 shadow-xl border border-stone-300/60 -rotate-2';
       item.style.left = '40px';
@@ -301,7 +324,7 @@
       item.style.width = '220px';
 
       item.innerHTML = `
-        <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200">
+        <div class="bg-black aspect-[4/5] overflow-hidden mb-2 rounded-sm border border-stone-200 pointer-events-none">
           <img src="${imgSrc}" class="w-full h-full object-cover">
         </div>
         <p class="handwriting text-center text-xl text-stone-800 leading-none py-1" contenteditable="true">Mi Recuerdo</p>
@@ -315,12 +338,12 @@
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) { createSticker(e.target.result); };
+      reader.onload = function(e) { createSticker(e.target.result, 'right'); };
       reader.readAsDataURL(file);
     }
 
-    function createSticker(imgSrc) {
-      const container = document.getElementById('page-right');
+    function createSticker(imgSrc, side = 'right') {
+      const container = document.getElementById(side === 'left' ? 'page-left' : 'page-right');
       const item = document.createElement('div');
       item.className = 'draggable-item rotate-3';
       item.style.left = '60px';
@@ -333,6 +356,7 @@
       container.appendChild(item);
     }
 
+    // Manejo de modal de Texto
     function addTextPrompt() {
       currentEditTarget = null;
       document.getElementById('modal-text-input').value = '';
@@ -376,12 +400,15 @@
       closeTextModal();
     }
 
+    // Funcionalidad de Arrastrar (Drag and Drop)
     function makeDraggable(element) {
       let posX = 0, posY = 0, initialX = 0, initialY = 0;
 
       element.onpointerdown = dragMouseDown;
 
       function dragMouseDown(e) {
+        if (e.target.getAttribute('contenteditable') === 'true') return;
+
         e.preventDefault();
         selectElement(element);
 
