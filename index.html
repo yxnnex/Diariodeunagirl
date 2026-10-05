@@ -115,10 +115,10 @@
       </button>
       <input type="file" id="sticker-input" accept="image/*" class="hidden" onchange="uploadSticker(event)">
 
-      <label class="bg-amber-900 hover:bg-amber-800 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-700/40 cursor-pointer transition">
+      <button onclick="triggerPhotoUpload()" class="bg-amber-900 hover:bg-amber-800 text-amber-100 font-semibold px-3 py-1.5 rounded-lg border border-amber-700/40 transition">
         📷 Foto Polaroid
-        <input type="file" accept="image/*" class="hidden" onchange="uploadPhoto(event)">
-      </label>
+      </button>
+      <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="uploadPhoto(event)">
 
       <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
         🗑️ Borrar
@@ -249,6 +249,23 @@
     </div>
   </div>
 
+  <!-- MODAL PHOTO -->
+  <div id="photo-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+      <h3 class="font-bold text-lg text-amber-200">¿En qué página querés colocar la foto?</h3>
+      <div>
+        <select id="photo-target-page" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
+          <option value="left">Página Izquierda</option>
+          <option value="right" selected>Página Derecha</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closePhotoModal()" class="px-4 py-2 bg-stone-800 rounded-lg text-xs">Cancelar</button>
+        <button onclick="confirmPhotoUpload()" class="px-5 py-2 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Seleccionar Foto</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE_KEY = 'scrapbook_album_data_v2';
     let currentSpread = 0;
@@ -259,6 +276,7 @@
     let activeElement = null;
     let currentEditTarget = null;
     let selectedStickerSide = 'right';
+    let selectedPhotoSide = 'right';
 
     document.addEventListener('DOMContentLoaded', () => {
       loadSavedData();
@@ -270,7 +288,6 @@
       const rightPage = document.getElementById('page-right');
       if (!leftPage || !rightPage) return;
 
-      // Limpiar bordes de selección antes de guardar
       document.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
 
       spreads[currentSpread].leftContent = Array.from(leftPage.children).map(el => el.outerHTML);
@@ -279,10 +296,16 @@
 
     function saveToLocalStorage() {
       saveCurrentSpreadState();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        currentSpread: currentSpread,
-        spreads: spreads
-      }));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          currentSpread: currentSpread,
+          spreads: spreads
+        }));
+      } catch (e) {
+        if (e.name === 'QuotaExceededError' || e.code === 22) {
+          alert('¡Límite de memoria alcanzado! Intenta borrar algunas fotos viejas.');
+        }
+      }
     }
 
     function loadSavedData() {
@@ -323,10 +346,9 @@
     }
 
     function nextPage() {
-      saveCurrentSpreadState(); // Guardar antes de cambiar
+      saveCurrentSpreadState();
       currentSpread++;
 
-      // Crear nuevo conjunto de páginas si no existe
       if (!spreads[currentSpread]) {
         spreads.push({
           leftBg: 'bg-kraft',
@@ -371,15 +393,65 @@
       saveToLocalStorage();
     }
 
+    /* COMPRESIÓN DE IMÁGENES */
+    function compressImage(file, maxWidth, maxHeight, quality, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          let canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          callback(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* FOTOS */
+    function triggerPhotoUpload() {
+      document.getElementById('photo-modal').classList.remove('hidden');
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photo-modal').classList.add('hidden');
+    }
+
+    function confirmPhotoUpload() {
+      selectedPhotoSide = document.getElementById('photo-target-page').value;
+      closePhotoModal();
+      document.getElementById('photo-input').click();
+    }
+
     function uploadPhoto(event) {
       const file = event.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) { 
-        createPolaroid(e.target.result, 'left');
+
+      compressImage(file, 600, 600, 0.7, (compressedDataUrl) => {
+        createPolaroid(compressedDataUrl, selectedPhotoSide);
         saveToLocalStorage();
-      };
-      reader.readAsDataURL(file);
+        event.target.value = '';
+      });
     }
 
     function createPolaroid(imgSrc, side = 'left') {
@@ -401,6 +473,7 @@
       container.appendChild(item);
     }
 
+    /* STICKERS */
     function triggerStickerUpload() {
       document.getElementById('sticker-modal').classList.remove('hidden');
     }
@@ -418,13 +491,12 @@
     function uploadSticker(event) {
       const file = event.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) { 
-        createSticker(e.target.result, selectedStickerSide);
+
+      compressImage(file, 400, 400, 0.8, (compressedDataUrl) => {
+        createSticker(compressedDataUrl, selectedStickerSide);
         saveToLocalStorage();
-      };
-      reader.readAsDataURL(file);
-      event.target.value = '';
+        event.target.value = '';
+      });
     }
 
     function createSticker(imgSrc, side = 'right') {
@@ -441,6 +513,7 @@
       container.appendChild(item);
     }
 
+    /* TEXTOS */
     function addTextPrompt() {
       currentEditTarget = null;
       document.getElementById('modal-text-input').value = '';
@@ -475,6 +548,7 @@
       saveToLocalStorage();
     }
 
+    /* ARRASTRAR */
     function makeDraggable(element) {
       let posX = 0, posY = 0, initialX = 0, initialY = 0;
 
