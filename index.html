@@ -318,9 +318,6 @@
         } catch (e) {
           console.error("Error al cargar datos:", e);
         }
-      } else {
-        createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
-        saveCurrentSpreadState();
       }
     }
 
@@ -394,7 +391,7 @@
     }
 
     /* COMPRESIÓN DE IMÁGENES */
-    function compressImage(file, maxWidth, maxHeight, quality, callback) {
+    function compressImage(file, maxWidth, maxHeight, quality, format, callback) {
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
@@ -419,16 +416,20 @@
           canvas.height = height;
 
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
 
-          callback(canvas.toDataURL('image/jpeg', quality));
+          if (format === 'image/png') {
+            ctx.clearRect(0, 0, width, height);
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          callback(canvas.toDataURL(format, quality));
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    /* FOTOS */
+    /* FOTOS (Compresión JPEG para guardar espacio) */
     function triggerPhotoUpload() {
       document.getElementById('photo-modal').classList.remove('hidden');
     }
@@ -447,7 +448,7 @@
       const file = event.target.files[0];
       if (!file) return;
 
-      compressImage(file, 600, 600, 0.7, (compressedDataUrl) => {
+      compressImage(file, 600, 600, 0.7, 'image/jpeg', (compressedDataUrl) => {
         createPolaroid(compressedDataUrl, selectedPhotoSide);
         saveToLocalStorage();
         event.target.value = '';
@@ -473,7 +474,7 @@
       container.appendChild(item);
     }
 
-    /* STICKERS */
+    /* STICKERS (PNG transparente preservado) */
     function triggerStickerUpload() {
       document.getElementById('sticker-modal').classList.remove('hidden');
     }
@@ -492,7 +493,7 @@
       const file = event.target.files[0];
       if (!file) return;
 
-      compressImage(file, 400, 400, 0.8, (compressedDataUrl) => {
+      compressImage(file, 350, 350, 0.8, 'image/png', (compressedDataUrl) => {
         createSticker(compressedDataUrl, selectedStickerSide);
         saveToLocalStorage();
         event.target.value = '';
@@ -548,7 +549,7 @@
       saveToLocalStorage();
     }
 
-    /* ARRASTRAR */
+    /* ARRASTRAR Y REDIMENSIONAR */
     function makeDraggable(element) {
       let posX = 0, posY = 0, initialX = 0, initialY = 0;
 
