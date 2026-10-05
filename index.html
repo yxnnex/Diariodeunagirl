@@ -75,6 +75,7 @@
       cursor: grab;
       touch-action: none;
       transition: box-shadow 0.1s ease;
+      z-index: 10;
     }
     .draggable-item:active {
       cursor: grabbing;
@@ -90,6 +91,7 @@
     .book-spine {
       background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.4));
       box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      z-index: 5;
     }
   </style>
 </head>
@@ -119,7 +121,7 @@
       </label>
 
       <button onclick="deleteSelected()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded-lg border border-stone-600 transition">
-        🗑️️ Borrar Selección
+        🗑 Borrar Selección
       </button>
     </div>
   </header>
@@ -159,7 +161,7 @@
         <div id="page-left" class="book-page bg-polkadot p-6 border-r border-black/20"></div>
 
         <!-- LOMO CENTRAL -->
-        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine z-30 pointer-events-none"></div>
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine pointer-events-none"></div>
 
         <!-- PÁGINA DERECHA -->
         <div id="page-right" class="book-page bg-kraft p-6 border-l border-black/20"></div>
@@ -197,17 +199,25 @@
 
       <div class="grid grid-cols-2 gap-3">
         <div>
+          <label class="block text-xs mb-1 text-amber-300/80">Ubicación de la página:</label>
+          <select id="modal-target-page" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
+            <option value="left">Página Izquierda</option>
+            <option value="right" selected>Página Derecha</option>
+          </select>
+        </div>
+        <div>
           <label class="block text-xs mb-1 text-amber-300/80">Color del marcador:</label>
           <input type="color" id="modal-color-input" value="#ba2d32" class="w-full h-10 bg-transparent cursor-pointer rounded">
         </div>
-        <div>
-          <label class="block text-xs mb-1 text-amber-300/80">Tamaño de letra:</label>
-          <select id="modal-size-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
-            <option value="text-2xl">Mediano</option>
-            <option value="text-4xl" selected>Grande</option>
-            <option value="text-5xl">Muy Grande</option>
-          </select>
-        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs mb-1 text-amber-300/80">Tamaño de letra:</label>
+        <select id="modal-size-input" class="w-full bg-[#150a06] border border-[#422517] text-white rounded h-10 px-2">
+          <option value="text-2xl">Mediano</option>
+          <option value="text-4xl" selected>Grande</option>
+          <option value="text-5xl">Muy Grande</option>
+        </select>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
@@ -219,7 +229,6 @@
 
   <script>
     let currentSpread = 0;
-    // Estructura para almacenar fondos y contenido de cada página de forma aislada
     let spreads = [
       { leftBg: 'bg-polkadot', rightBg: 'bg-kraft', leftContent: [], rightContent: [] }
     ];
@@ -228,12 +237,10 @@
     let currentEditTarget = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Cargar primer pliego con una foto de ejemplo en la página 1
       createPolaroid("https://i.postimg.cc/xXqms46q/imagen.jpg", 'left');
       renderSpread();
     });
 
-    // Guardar el estado actual de las páginas antes de cambiar de pliego
     function saveCurrentSpreadState() {
       const leftPage = document.getElementById('page-left');
       const rightPage = document.getElementById('page-right');
@@ -242,27 +249,22 @@
       spreads[currentSpread].rightContent = Array.from(rightPage.children).map(el => el.outerHTML);
     }
 
-    // Renderizar el pliego y restaurar sus elementos
     function renderSpread() {
       const data = spreads[currentSpread];
       const pageLeft = document.getElementById('page-left');
       const pageRight = document.getElementById('page-right');
 
-      // Aplicar fondos
       pageLeft.className = `book-page ${data.leftBg} p-6 border-r border-black/20`;
       pageRight.className = `book-page ${data.rightBg} p-6 border-l border-black/20`;
 
       document.getElementById('select-left-bg').value = data.leftBg;
       document.getElementById('select-right-bg').value = data.rightBg;
 
-      // Cargar contenidos almacenados para este pliego
       pageLeft.innerHTML = data.leftContent.join('');
       pageRight.innerHTML = data.rightContent.join('');
 
-      // Reactivar la interactividad drag and drop
       document.querySelectorAll('.draggable-item').forEach(makeDraggable);
 
-      // Actualizar número de páginas
       const pLeft = (currentSpread * 2) + 1;
       const pRight = (currentSpread * 2) + 2;
       document.getElementById('page-indicator').innerText = `PÁGINAS ${pLeft} - ${pRight}`;
@@ -306,7 +308,6 @@
       renderSpread();
     }
 
-    // Subir Fotos y Stickers
     function uploadPhoto(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -356,7 +357,6 @@
       container.appendChild(item);
     }
 
-    // Manejo de modal de Texto
     function addTextPrompt() {
       currentEditTarget = null;
       document.getElementById('modal-text-input').value = '';
@@ -371,6 +371,7 @@
       const text = document.getElementById('modal-text-input').value;
       const color = document.getElementById('modal-color-input').value;
       const size = document.getElementById('modal-size-input').value;
+      const targetSide = document.getElementById('modal-target-page').value;
 
       if (!text.trim()) return;
 
@@ -379,11 +380,11 @@
         currentEditTarget.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab`;
         currentEditTarget.innerText = text;
       } else {
-        const container = document.getElementById('page-right');
+        const container = document.getElementById(targetSide === 'left' ? 'page-left' : 'page-right');
         const item = document.createElement('div');
         item.className = `draggable-item handwriting ${size} font-bold leading-tight select-none cursor-grab -rotate-1`;
-        item.style.left = '30px';
-        item.style.top = '40px';
+        item.style.left = '40px';
+        item.style.top = '60px';
         item.style.color = color;
         item.innerText = text;
 
@@ -400,7 +401,6 @@
       closeTextModal();
     }
 
-    // Funcionalidad de Arrastrar (Drag and Drop)
     function makeDraggable(element) {
       let posX = 0, posY = 0, initialX = 0, initialY = 0;
 
