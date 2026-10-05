@@ -250,6 +250,21 @@
     </div>
   </div>
 
+  <!-- MODAL PARA CAMBIAR TAMAÑO DE STICKER -->
+  <div id="resize-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-[#24140e] border border-[#52301f] text-amber-100 rounded-2xl max-w-xs w-full p-5 shadow-2xl space-y-4">
+      <h3 class="font-bold text-base text-amber-200">Ajustar Tamaño del Sticker</h3>
+      <div>
+        <label class="block text-xs mb-1 text-amber-300/80">Ancho (píxeles):</label>
+        <input type="number" id="resize-width-input" min="30" max="500" class="w-full bg-[#150a06] border border-[#422517] rounded-xl p-2 text-white text-center font-bold focus:outline-none">
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="closeResizeModal()" class="px-3 py-1.5 bg-stone-800 rounded-lg text-xs">Cancelar</button>
+        <button onclick="applyStickerResize()" class="px-4 py-1.5 bg-amber-700 hover:bg-amber-600 font-bold rounded-lg text-xs text-white">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE_KEY = 'scrapbook_album_data';
     let currentSpread = 0;
@@ -260,6 +275,7 @@
     let activeElement = null;
     let currentEditTarget = null;
     let selectedStickerSide = 'right';
+    let targetStickerForResize = null;
 
     document.addEventListener('DOMContentLoaded', () => {
       loadSavedData();
@@ -475,10 +491,53 @@
       saveToLocalStorage();
     }
 
+    // Modal y lógica para redimensionar
+    function openResizeModal(item) {
+      targetStickerForResize = item;
+      const currentWidth = parseInt(item.style.width) || 120;
+      document.getElementById('resize-width-input').value = currentWidth;
+      document.getElementById('resize-modal').classList.remove('hidden');
+    }
+
+    function closeResizeModal() {
+      document.getElementById('resize-modal').classList.add('hidden');
+      targetStickerForResize = null;
+    }
+
+    function applyStickerResize() {
+      if (!targetStickerForResize) return;
+      const newWidth = parseInt(document.getElementById('resize-width-input').value);
+      if (newWidth && newWidth >= 20) {
+        targetStickerForResize.style.width = newWidth + 'px';
+        saveToLocalStorage();
+      }
+      closeResizeModal();
+    }
+
     function makeDraggable(element) {
       let posX = 0, posY = 0, initialX = 0, initialY = 0;
 
       element.onpointerdown = dragMouseDown;
+
+      // Evento de rueda del mouse para cambiar tamaño
+      element.onwheel = function(e) {
+        e.preventDefault();
+        let currentWidth = parseInt(element.style.width) || 120;
+        if (e.deltaY < 0) {
+          currentWidth += 8; // Agrandar
+        } else {
+          currentWidth = Math.max(30, currentWidth - 8); // Achicar
+        }
+        element.style.width = currentWidth + 'px';
+        saveToLocalStorage();
+      };
+
+      // Doble clic para abrir el menú de ajuste preciso
+      element.ondblclick = function(e) {
+        if (element.querySelector('img')) {
+          openResizeModal(element);
+        }
+      };
 
       function dragMouseDown(e) {
         if (e.target.getAttribute('contenteditable') === 'true') return;
